@@ -1,0 +1,305 @@
+{
+  "offroad Parent Category": {
+    "TotalCars": 12
+  },
+  "Muscle": {
+    "TotalMuscleCars": 2,
+    "MuscleBubbleHeader": "Muscle - Raw power and aggressive styling built for high-speed dominance.",
+    "MuscleFeature1": "High-performance rear-wheel drive",
+    "MuscleFeature2": "Supercharged V8 engines",
+    "MuscleFeature3": "Reinforced drag suspension",
+    "MuscleFeature4": "Massive torque output",
+    "MuscleFeature5": "Classic American muscle design"
+  },
+  "Car1-Muscle": {
+    "CarID": "offroad-muscle-street-dominator",
+    "CarName": "Street Dominator",
+    "CarMainIMG": "images/offroad/street-dominator.jpg"
+  },
+  "Car1-Muscle-Specs": {
+    "HP": 750,
+    "Engine": "Supercharged V8",
+    "Weight": "3800 lbs",
+    "Acceleration_0-60": "3.5 sec",
+    "TopSpeed": "200 mph",
+    "Transmission": "6-speed manual",
+    "DriveTrain": "RWD",
+    "Torque": "800 lb-ft",
+    "BrakingSystem": "Brembo Carbon-Ceramic",
+    "Suspension": "Reinforced Drag Racing Setup",
+    "OtherImgs": [
+      "images/offroad/street-dominator-side.jpg",
+      "images/offroad/street-dominator-rear.jpg",
+      "images/offroad/street-dominator-interior.jpg"
+    ]
+  },
+  "Car2-Muscle": {
+    "CarID": "offroad-muscle-torque-beast",
+    "CarName": "Torque Beast",
+    "CarMainIMG": "images/offroad/torque-beast.jpg"
+  },
+  "Car2-Muscle-Specs": {
+    "HP": 900,
+    "Engine": "Twin Turbo V10",
+    "Weight": "3900 lbs",
+    "Acceleration_0-60": "3.2 sec",
+    "TopSpeed": "210 mph",
+    "Transmission": "8-speed automatic",
+    "DriveTrain": "AWD",
+    "Torque": "900 lb-ft",
+    "BrakingSystem": "High-performance ventilated discs",
+    "Suspension": "Active Adaptive Suspension",
+    "OtherImgs": [
+      "images/offroad/torque-beast-side.jpg",
+      "images/offroad/torque-beast-rear.jpg",
+      "images/offroad/torque-beast-interior.jpg"
+    ]
+  },
+  "Sport": {
+    "TotalSportCars": 2,
+    "SportBubbleHeader": "Sport - Lightweight, agile, and track-tuned machines.",
+    "SportFeature1": "Advanced aerodynamic kits",
+    "SportFeature2": "Precision handling and suspension tuning",
+    "SportFeature3": "Turbocharged high-RPM engines",
+    "SportFeature4": "Race-inspired lightweight chassis",
+    "SportFeature5": "Multi-functional digital dash"
+  },
+  "Car1-Sport": {
+    "CarID": "offroad-sport-speed-demon",
+    "CarName": "Speed Demon",
+    "CarMainIMG": "images/offroad/speed-demon.jpg"
+  },
+  "Car1-Sport-Specs": {
+    "HP": 800,
+    "Engine": "Twin Turbo V8",
+    "Weight": "2800 lbs",
+    "Acceleration_0-60": "2.9 sec",
+    "TopSpeed": "220 mph",
+    "Transmission": "7-speed dual-clutch",
+    "DriveTrain": "AWD",
+    "Aerodynamics": "Active wing & underbody downforce",
+    "OtherImgs": [
+      "images/offroad/speed-demon-side.jpg",
+      "images/offroad/speed-demon-rear.jpg",
+      "images/offroad/speed-demon-interior.jpg"
+    ]
+  },
+  "Car2-Sport": {
+    "CarID": "offroad-sport-track-king",
+    "CarName": "Track King",
+    "CarMainIMG": "images/offroad/track-king.jpg"
+  },
+  "Car2-Sport-Specs": {
+    "HP": 900,
+    "Engine": "Naturally Aspirated V10",
+    "Weight": "3200 lbs",
+    "Acceleration_0-60": "2.7 sec",
+    "TopSpeed": "230 mph",
+    "Transmission": "6-speed sequential",
+    "DriveTrain": "RWD",
+    "Aerodynamics": "Active diffuser & adjustable spoilers",
+    "OtherImgs": [
+      "images/offroad/track-king-side.jpg",
+      "images/offroad/track-king-rear.jpg",
+      "images/offroad/track-king-interior.jpg"
+    ]
+  },
+  "Casual": {
+    "TotalCasualCars": 2,
+    "CasualBubbleHeader": "Casual - Balanced performance cars designed for comfort and excitement.",
+    "CasualFeature1": "Comfortable yet performance-oriented chassis",
+    "CasualFeature2": "Sport-tuned suspension for daily driving",
+    "CasualFeature3": "Smart digital dashboard with AI assistant",
+    "CasualFeature4": "Variable traction control system",
+    "CasualFeature5": "Hydraulic assisted cornering"
+  },
+  "Car1-Casual": {
+    "CarID": "offroad-casual-urban-cruiser",
+    "CarName": "Urban Cruiser",
+    "CarMainIMG": "images/offroad/urban-cruiser.jpg"
+  },
+  "Car1-Casual-Specs": {
+    "HP": 450,
+    "Engine": "Turbo Inline-6",
+    "Weight": "3500 lbs",
+    "Acceleration_0-60": "4.8 sec",
+    "TopSpeed": "160 mph",
+    "Transmission": "8-speed automatic",
+    "DriveTrain": "AWD",
+    "OtherImgs": [
+      "images/offroad/urban-cruiser-side.jpg",
+      "images/offroad/urban-cruiser-rear.jpg",
+      "images/offroad/urban-cruiser-interior.jpg"
+    ]
+  },
+  "Car2-Casual": {
+    "CarID": "offroad-casual-city-racer",
+    "CarName": "City Racer",
+    "CarMainIMG": "images/offroad/city-racer.jpg"
+  },
+  "Car2-Casual-Specs": {
+    "HP": 500,
+    "Engine": "Twin Turbo V6",
+    "Weight": "3400 lbs",
+    "Acceleration_0-60": "4.5 sec",
+    "TopSpeed": "170 mph",
+    "Transmission": "6-speed manual",
+    "DriveTrain": "RWD",
+    "OtherImgs": [
+      "images/offroad/city-racer-side.jpg",
+      "images/offroad/city-racer-rear.jpg",
+      "images/offroad/city-racer-interior.jpg"
+    ]
+  },
+  "Endurance": {
+    "TotalEnduranceCars": 2,
+    "EnduranceBubbleHeader": "Endurance - Built for long-haul racing and performance stability.",
+    "EnduranceFeature1": "Ultra-durable reinforced chassis",
+    "EnduranceFeature2": "High-efficiency hybrid powertrains",
+    "EnduranceFeature3": "Advanced cooling systems",
+    "EnduranceFeature4": "Extended-range fuel tanks",
+    "EnduranceFeature5": "Endurance-optimized aerodynamics"
+  },
+  "Car1-Endurance": {
+    "CarID": "offroad-endurance-marathon-king",
+    "CarName": "Marathon King",
+    "CarMainIMG": "images/offroad/marathon-king.jpg"
+  },
+  "Car1-Endurance-Specs": {
+    "HP": 650,
+    "Engine": "Hybrid Turbo V6",
+    "Weight": "3500 lbs",
+    "Acceleration_0-60": "4.2 sec",
+    "TopSpeed": "185 mph",
+    "Transmission": "10-speed automatic",
+    "DriveTrain": "AWD",
+    "FuelCapacity": "25 gallons",
+    "OtherImgs": [
+      "images/offroad/marathon-king-side.jpg",
+      "images/offroad/marathon-king-rear.jpg",
+      "images/offroad/marathon-king-interior.jpg"
+    ]
+  },
+  "Car2-Endurance": {
+    "CarID": "offroad-endurance-road-titan",
+    "CarName": "Road Titan",
+    "CarMainIMG": "images/offroad/road-titan.jpg"
+  },
+  "Car2-Endurance-Specs": {
+    "HP": 700,
+    "Engine": "Diesel-Electric Hybrid",
+    "Weight": "3700 lbs",
+    "Acceleration_0-60": "4.0 sec",
+    "TopSpeed": "190 mph",
+    "Transmission": "8-speed sequential",
+    "DriveTrain": "AWD",
+    "FuelCapacity": "30 gallons",
+    "OtherImgs": [
+      "images/offroad/road-titan-side.jpg",
+      "images/offroad/road-titan-rear.jpg",
+      "images/offroad/road-titan-interior.jpg"
+    ]
+  },
+  "Exotic": {
+    "TotalExoticCars": 2,
+    "ExoticBubbleHeader": "Exotic - The pinnacle of luxury and high-performance engineering.",
+    "ExoticFeature1": "Handcrafted carbon fiber bodywork",
+    "ExoticFeature2": "High-revving naturally aspirated engines",
+    "ExoticFeature3": "Luxury interior with premium materials",
+    "ExoticFeature4": "Advanced aerodynamics for superior handling",
+    "ExoticFeature5": "Ultra-lightweight forged wheels"
+  },
+  "Car1-Exotic": {
+    "CarID": "offroad-exotic-phantom-hyper",
+    "CarName": "Phantom Hyper",
+    "CarMainIMG": "images/offroad/phantom-hyper.jpg"
+  },
+  "Car1-Exotic-Specs": {
+    "HP": 1100,
+    "Engine": "Quad Turbocharged V12",
+    "Weight": "2900 lbs",
+    "Acceleration_0-60": "2.5 sec",
+    "TopSpeed": "250 mph",
+    "Transmission": "9-speed dual-clutch",
+    "DriveTrain": "AWD",
+    "Material": "Full Carbon Monocoque Chassis",
+    "OtherImgs": [
+      "images/offroad/phantom-hyper-side.jpg",
+      "images/offroad/phantom-hyper-rear.jpg",
+      "images/offroad/phantom-hyper-interior.jpg"
+    ]
+  },
+  "Car2-Exotic": {
+    "CarID": "offroad-exotic-venom-gtx",
+    "CarName": "Venom GTX",
+    "CarMainIMG": "images/offroad/venom-gtx.jpg"
+  },
+  "Car2-Exotic-Specs": {
+    "HP": 1250,
+    "Engine": "Supercharged Hybrid V10",
+    "Weight": "2800 lbs",
+    "Acceleration_0-60": "2.3 sec",
+    "TopSpeed": "260 mph",
+    "Transmission": "8-speed automatic",
+    "DriveTrain": "RWD",
+    "Material": "Titanium-Aluminum Composite",
+    "OtherImgs": [
+      "images/offroad/venom-gtx-side.jpg",
+      "images/offroad/venom-gtx-rear.jpg",
+      "images/offroad/venom-gtx-interior.jpg"
+    ]
+  },
+  "XRS": {
+    "TotalXRSCars": 2,
+    "XRSBubbleHeader": "XRS - Extreme Racing Sports, engineered for the toughest competition.",
+    "XRSFeature1": "High-end heavy-duty chassis",
+    "XRSFeature2": "High-end rugged lift kit",
+    "XRSFeature3": "XE 10 lb tank of nitrous oxide",
+    "XRSFeature4": "Kinetic energy suspension",
+    "XRSFeature5": "Damage avoidance system",
+    "XRSFeature6": "Multi-function dash display",
+    "XRSFeature7": "Variable traction control system",
+    "XRSFeature8": "Nanopolymer-infused rubber tires",
+    "XRSFeature9": "Hydraulic actuation re-orientation system"
+  },
+  "Car1-XRS": {
+    "CarID": "offroad-xrs-apex-predator",
+    "CarName": "Apex Predator",
+    "CarMainIMG": "images/offroad/xrs-apex-predator.jpg"
+  },
+  "Car1-XRS-Specs": {
+    "HP": 1400,
+    "Engine": "Twin-Turbo Hybrid V8",
+    "Weight": "3200 lbs",
+    "Acceleration_0-60": "2.1 sec",
+    "TopSpeed": "275 mph",
+    "Transmission": "10-speed sequential",
+    "DriveTrain": "AWD",
+    "Suspension": "Active Race Suspension",
+    "OtherImgs": [
+      "images/offroad/xrs-apex-predator-side.jpg",
+      "images/offroad/xrs-apex-predator-rear.jpg",
+      "images/offroad/xrs-apex-predator-interior.jpg"
+    ]
+  },
+  "Car2-XRS": {
+    "CarID": "offroad-xrs-dune-devil",
+    "CarName": "Dune Devil",
+    "CarMainIMG": "images/offroad/xrs-dune-devil.jpg"
+  },
+  "Car2-XRS-Specs": {
+    "HP": 1100,
+    "Engine": "Turbocharged V8",
+    "Weight": "3000 lbs",
+    "Acceleration_0-60": "2.7 sec",
+    "TopSpeed": "245 mph",
+    "Transmission": "8-speed dual-clutch",
+    "DriveTrain": "RWD",
+    "Suspension": "Hydraulic Adaptive Off-Road System",
+    "OtherImgs": [
+      "images/offroad/xrs-dune-devil-side.jpg",
+      "images/offroad/xrs-dune-devil-rear.jpg",
+      "images/offroad/xrs-dune-devil-interior.jpg"
+    ]
+  }
+}
