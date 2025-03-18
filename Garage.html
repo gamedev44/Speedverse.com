@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeedVerse - Verse Garage</title>
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+
+    <style>
+        /* General Styling */
+        body {
+            background-color: #0a0a0a;
+            color: white;
+            font-family: 'Russo One', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        /* Header */
+        header {
+            background-color: black;
+            padding: 40px 20px;
+            font-size: 2rem;
+            text-transform: uppercase;
+            border-bottom: 3px solid red;
+            position: relative;
+        }
+        /* Global Navbar */
+        .global-nav {
+            background-color: black;
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+        .global-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 15px;
+            transition: all 0.3s;
+        }
+        .global-nav a:hover {
+            color: red;
+        }
+        /* Search Bar */
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+        }
+        .search-input {
+            width: 0;
+            padding: 10px;
+            font-size: 1.2rem;
+            border: 2px solid white;
+            background: #222;
+            color: white;
+            border-radius: 25px;
+            transition: width 0.4s ease-in-out, padding 0.4s;
+            opacity: 0;
+        }
+        .search-container.expanded .search-input {
+            width: 300px;
+            padding: 10px 15px;
+            opacity: 1;
+        }
+        .search-btn {
+            background: transparent;
+            color: red;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.8rem;
+            margin-left: 5px;
+        }
+        .search-btn:hover {
+            color: white;
+        }
+        /* Category Navigation */
+        .main-nav, .secondary-nav {
+            background-color: #111;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .main-nav a, .secondary-nav a {
+            color: grey;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            transition: color 0.3s, background 0.3s;
+        }
+        .main-nav a.active, .secondary-nav a.active {
+            color: white;
+            background: red;
+            border-radius: 5px;
+        }
+        /* Categories and Cars */
+        .category-bubble {
+            background: #222;
+            padding: 20px;
+            margin: 30px auto;
+            width: 80%;
+            border: 2px solid white;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+        }
+        .category-content {
+            display: none;
+            padding: 20px;
+        }
+        .car-item {
+            background: #151515;
+            padding: 10px;
+            border: 2px solid white;
+            box-shadow: 0px 0px 10px grey;
+            margin-top: 15px;
+        }
+        .car-item img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+        }
+        .highlight {
+            border: 3px solid red;
+            box-shadow: 0px 0px 15px red;
+        }
+    </style>
+</head>
+<body>
+    <header>
+    <h1>Verse Garage</h1>
+        <nav class="global-nav">
+            <a href="home.html">Home</a>
+            <a href="garage.html">Garage</a>
+            <a href="media.html">Media</a>
+            <a href="updates.html">Updates</a>
+        </nav>
+    </header>
+
+    <div class="search-container" id="searchBox">
+        <input type="text" class="search-input" id="searchBar" placeholder="Search for a car..." onkeypress="handleKeyPress(event)">
+        <button class="search-btn" onclick="toggleSearch()">
+            <i class="fa-brands fa-searchengin"></i>
+        </button>
+    </div>
+
+    <nav class="main-nav">
+        <a href="#" onclick="setMainActive(this); loadDatabase('onroad-db.ini')">Onroad</a>
+        <a href="#" onclick="setMainActive(this); loadDatabase('offroad-db.ini')">Offroad</a>
+    </nav>
+
+    <nav class="secondary-nav" id="category-nav">
+        <a href="#" onclick="setCategoryActive(this); showCategory('Sport')">Sport</a>
+        <a href="#" onclick="setCategoryActive(this); showCategory('Casual')">Casual</a>
+        <a href="#" onclick="setCategoryActive(this); showCategory('Muscle')">Muscle</a>
+        <a href="#" onclick="setCategoryActive(this); showCategory('Endurance')">Endurance</a>
+        <a href="#" onclick="setCategoryActive(this); showCategory('Exotic')">Exotic</a>
+        <a href="#" onclick="setCategoryActive(this); showCategory('XRS')">XRS</a>
+    </nav>
+
+    <div id="categories-container"></div>
+
+    <script>
+        let currentMainNav = null;
+        let currentCategoryNav = null;
+
+        async function loadDatabase(dbFile) {
+            const response = await fetch(dbFile);
+            const text = await response.text();
+            const lines = text.split("\n");
+            let categoriesHTML = "";
+
+            let currentCategory = null;
+            lines.forEach(line => {
+                line = line.trim();
+                if (line.startsWith("[") && line.endsWith("]")) {
+                    currentCategory = line.slice(1, -1);
+                    categoriesHTML += `<div id="${currentCategory}" class="category-content"></div>`;
+                } else if (currentCategory && line.startsWith("Car=")) {
+                    const carData = line.split("=")[1].split("|");
+                    document.getElementById(currentCategory).innerHTML += `
+                        <div class="car-item">
+                            <h3>${carData[0]}</h3>
+                            <img src="${carData[1]}" alt="${carData[0]}">
+                            <p><strong>Engine:</strong> ${carData[2]}</p>
+                            <p><strong>Weight:</strong> ${carData[3]}</p>
+                        </div>
+                    `;
+                }
+            });
+
+            document.getElementById("categories-container").innerHTML = categoriesHTML;
+        }
+
+        function showCategory(category) {
+            document.querySelectorAll(".category-content").forEach(el => el.style.display = "none");
+            document.getElementById(category).style.display = "block";
+        }
+
+        function toggleSearch() {
+            let searchBox = document.getElementById("searchBox");
+            searchBox.classList.toggle("expanded");
+            document.getElementById("searchBar").focus();
+        }
+
+        function setMainActive(element) {
+            if (currentMainNav) {
+                currentMainNav.classList.remove("active");
+            }
+            element.classList.add("active");
+            currentMainNav = element;
+        }
+
+        function setCategoryActive(element) {
+            if (currentCategoryNav) {
+                currentCategoryNav.classList.remove("active");
+            }
+            element.classList.add("active");
+            currentCategoryNav = element;
+        }
+    </script>
+</body>
+</html>
