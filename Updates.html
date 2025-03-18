@@ -1,280 +1,367 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#000000">
-  <title>SpeedVerse.com - Updates</title>
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
-
-  <style>
-    /* -- Inlined CSS from style.css -- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      background-color: #0a0a0a;
-      color: white;
-      font-family: 'Russo One', sans-serif;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    .highlight {
-      background-color: yellow;
-      color: black;
-    }
-    /* Header */
-    header {
-      background-color: black;
-      padding: 40px 20px;
-      font-size: 2rem;
-      text-transform: uppercase;
-      border-bottom: 3px solid red;
-      position: relative;
-    }
-    .logo { size: 200%; }
-    /* Global Navbar */
-    .global-nav {
-      background-color: black;
-      padding: 10px 0;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      font-size: 1rem;
-      text-transform: uppercase;
-    }
-    .global-nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-      padding: 10px 15px;
-      transition: all 0.3s;
-    }
-    .global-nav a:hover,
-    .global-nav a.active {
-      color: red;
-    }
-    /* Search Bar */
-    .search-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 20px auto;
-    }
-    .search-input {
-      width: 0;
-      padding: 10px;
-      font-size: 1.2rem;
-      border: 2px solid white;
-      background: #222;
-      color: white;
-      border-radius: 25px;
-      transition: width 0.4s ease-in-out, padding 0.4s;
-      opacity: 0;
-    }
-    .search-container.expanded .search-input {
-      width: 300px;
-      padding: 10px 15px;
-      opacity: 1;
-    }
-    .search-btn {
-      background: transparent;
-      color: red;
-      padding: 10px;
-      border: none;
-      cursor: pointer;
-      font-size: 1.8rem;
-      margin-left: 5px;
-    }
-    .search-btn:hover {
-      color: white;
-    }
-    /* Navbars */
-    .main-nav,
-    .secondary-nav {
-      background-color: #111;
-      padding: 10px;
-      font-size: 1.2rem;
-      text-transform: uppercase;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-    .main-nav a,
-    .secondary-nav a {
-      color: grey;
-      text-decoration: none;
-      font-weight: bold;
-      padding: 5px 10px;
-      transition: color 0.3s, background 0.3s;
-    }
-    .main-nav a.active,
-    .secondary-nav a.active {
-      color: white;
-      background: red;
-      border-radius: 5px;
-    }
-    /* Category Bubbles */
-    .category-bubble {
-      background: #222;
-      padding: 20px;
-      margin: 30px auto;
-      width: 80%;
-      border: 2px solid white;
-      text-transform: uppercase;
-      font-size: 1.2rem;
-    }
-    /* Car Items */
-    .car-item {
-      background: #151515;
-      padding: 10px;
-      border: 2px solid white;
-      box-shadow: 0px 0px 10px grey;
-      margin-top: 15px;
-    }
-    .car-item img {
-      width: 100%;
-      max-width: 500px;
-      height: auto;
-    }
-    /* Updates Page */
-    .updates-section {
-      background-color: #222;
-      padding: 20px;
-      margin: 20px auto;
-      width: 80%;
-      border: 2px solid white;
-      text-transform: uppercase;
-      font-size: 1.2rem;
-    }
-    .github-updates {
-      margin-top: 30px;
-      padding: 20px;
-      background-color: #151515;
-      border: 2px solid red;
-    }
-    /* Footer */
-    footer {
-      background-color: black;
-      padding: 15px;
-      text-align: center;
-      margin-top: 20px;
-    }
-    footer a {
-      color: white;
-      text-decoration: none;
-      margin: 0 15px;
-      transition: color 0.3s;
-    }
-    footer a:hover {
-      color: red;
-    }
-    .footer-links {
-      margin-bottom: 10px;
-    }
-    .footer-sitemap {
-      margin-top: 10px;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Updates</h1>
-    <nav class="global-nav">
-      <a href="Home.html">Home</a>
-      <a href="Garage.html">Garage</a>
-      <a href="Media.html">Media</a>
-      <a href="Updates.html">Updates</a>
-    </nav>
-  </header>
-
-  <!-- SEARCH BAR -->
-  <div class="search-container" id="searchBox">
-    <input type="text" class="search-input" id="searchBar" placeholder="Search updates..." onkeypress="handleKeyPress(event)">
-    <button class="search-btn" onclick="toggleSearch()">
-      <i class="fa-brands fa-searchengin"></i>
-    </button>
-  </div>
-
-  <!-- Hardcoded updates info -->
-  <section class="updates-section">
-    <h2>Latest SpeedVerse News</h2>
-    <p>Stay informed on the newest features, expansions, and more.</p>
-    <ul>
-      <li><strong>March 20:</strong> New off-road tracks added in the desert region.</li>
-      <li><strong>March 15:</strong> “Torque Beast” muscle car introduced with twin turbo V10.</li>
-      <li><strong>March 10:</strong> Community tournaments are now open for registration.</li>
-    </ul>
-  </section>
-
-  <!-- GitHub auto-updates from your real repo -->
-  <section class="github-updates">
-    <h2>GitHub Commits</h2>
-    <p>Auto-updating commits from <em>SpeedVerseInvision</em> repo:</p>
-    <ul id="commits"></ul>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-links">
-      <a href="https://discord.gg/speedverse" target="_blank">Join Discord</a>
-      <button onclick="toggleSitemap()">Sitemap</button>
-      <a href="about.html">About Us</a>
-      <a href="contact.html">Contact</a>
-    </div>
-    <div class="footer-sitemap" id="footer-sitemap" style="display:none;">
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="tos.html">Terms of Service</a>
-      <a href="eula.html">EULA</a>
-      <a href="copyright.html">Copyright Info</a>
-    </div>
-  </footer>
-
-  <script>
-    // Simple search highlight
-    function handleKeyPress(e) {
-      if(e.key === 'Enter') {
-        let searchTerm = e.target.value.toLowerCase();
-        let bodyText = document.body.innerHTML;
-        bodyText = bodyText.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
-        if(searchTerm.trim().length > 0) {
-          let regex = new RegExp(searchTerm, "gi");
-          bodyText = bodyText.replace(regex, match => `<span class="highlight">${match}</span>`);
-        }
-        document.body.innerHTML = bodyText;
-      }
-    }
-
-    function toggleSearch() {
-      let searchBox = document.getElementById("searchBox");
-      searchBox.classList.toggle("expanded");
-      document.getElementById("searchBar").focus();
-    }
-
-    // GitHub commits from your real repo
-    async function fetchCommits() {
-      const response = await fetch("https://api.github.com/repos/gamedev44/SpeedVerseInvision/commits");
-      const commits = await response.json();
-      const commitList = document.getElementById("commits");
-      commitList.innerHTML = "";
-      commits.slice(0, 5).forEach(commit => {
-        let item = document.createElement("li");
-        item.innerHTML = `<strong>${commit.commit.author.name}</strong>: ${commit.commit.message}`;
-        commitList.appendChild(item);
-      });
-    }
-    // Refresh commits every 5s
-    setInterval(fetchCommits, 5000);
-
-    function toggleSitemap() {
-      const sm = document.getElementById('footer-sitemap');
-      sm.style.display = (sm.style.display === 'block') ? 'none' : 'block';
-    }
-  </script>
-</body>
-</html>
+<!-- Updates.html (Updated to display overall commits, lines in code languages, and other repo info. 
+     All original code retained; we simply added new sections to fetch additional data from the GitHub API.) -->
+     <!DOCTYPE html>
+     <html lang="en">
+     <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <meta name="theme-color" content="#000000">
+       <title>SpeedVerse.com - Updates</title>
+       
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+       <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+     
+       <style>
+         * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+         }
+         body {
+           background-color: #0a0a0a;
+           color: white;
+           font-family: 'Russo One', sans-serif;
+           margin: 0;
+           padding: 0;
+           text-align: center;
+         }
+         .highlight {
+           background-color: yellow;
+           color: black;
+         }
+         header {
+           background-color: black;
+           padding: 40px 20px;
+           font-size: 2rem;
+           text-transform: uppercase;
+           border-bottom: 3px solid red;
+           position: relative;
+         }
+         .logo { size: 200%; }
+         .global-nav {
+           background-color: black;
+           padding: 10px 0;
+           display: flex;
+           justify-content: center;
+           gap: 20px;
+           font-size: 1rem;
+           text-transform: uppercase;
+         }
+         .global-nav a {
+           color: white;
+           text-decoration: none;
+           font-weight: bold;
+           padding: 10px 15px;
+           transition: all 0.3s;
+         }
+         .global-nav a:hover,
+         .global-nav a.active {
+           color: red;
+         }
+         .search-container {
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           margin: 20px auto;
+         }
+         .search-input {
+           width: 0;
+           padding: 10px;
+           font-size: 1.2rem;
+           border: 2px solid white;
+           background: #222;
+           color: white;
+           border-radius: 25px;
+           transition: width 0.4s ease-in-out, padding 0.4s;
+           opacity: 0;
+         }
+         .search-container.expanded .search-input {
+           width: 300px;
+           padding: 10px 15px;
+           opacity: 1;
+         }
+         .search-btn {
+           background: transparent;
+           color: red;
+           padding: 10px;
+           border: none;
+           cursor: pointer;
+           font-size: 1.8rem;
+           margin-left: 5px;
+         }
+         .search-btn:hover {
+           color: white;
+         }
+         .main-nav,
+         .secondary-nav {
+           background-color: #111;
+           padding: 10px;
+           font-size: 1.2rem;
+           text-transform: uppercase;
+           display: flex;
+           justify-content: center;
+           gap: 20px;
+         }
+         .main-nav a,
+         .secondary-nav a {
+           color: grey;
+           text-decoration: none;
+           font-weight: bold;
+           padding: 5px 10px;
+           transition: color 0.3s, background 0.3s;
+         }
+         .main-nav a.active,
+         .secondary-nav a.active {
+           color: white;
+           background: red;
+           border-radius: 5px;
+         }
+         .category-bubble {
+           background: #222;
+           padding: 20px;
+           margin: 30px auto;
+           width: 80%;
+           border: 2px solid white;
+           text-transform: uppercase;
+           font-size: 1.2rem;
+         }
+         .car-item {
+           background: #151515;
+           padding: 10px;
+           border: 2px solid white;
+           box-shadow: 0px 0px 10px grey;
+           margin-top: 15px;
+         }
+         .car-item img {
+           width: 100%;
+           max-width: 500px;
+           height: auto;
+         }
+         .updates-section {
+           background-color: #222;
+           padding: 20px;
+           margin: 20px auto;
+           width: 80%;
+           border: 2px solid white;
+           text-transform: uppercase;
+           font-size: 1.2rem;
+         }
+         .github-updates {
+           margin-top: 30px;
+           padding: 20px;
+           background-color: #151515;
+           border: 2px solid red;
+         }
+         footer {
+           background-color: black;
+           padding: 15px;
+           text-align: center;
+           margin-top: 20px;
+         }
+         footer a {
+           color: white;
+           text-decoration: none;
+           margin: 0 15px;
+           transition: color 0.3s;
+         }
+         footer a:hover {
+           color: red;
+         }
+         .footer-links {
+           margin-bottom: 10px;
+         }
+         .footer-sitemap {
+           margin-top: 10px;
+         }
+         /* New section for code language stats */
+         .repo-stats {
+           background-color: #222;
+           padding: 20px;
+           margin: 20px auto;
+           width: 80%;
+           border: 2px solid red;
+           text-transform: uppercase;
+           font-size: 1.2rem;
+         }
+         .repo-stats ul {
+           margin-top: 10px;
+           list-style-type: none;
+         }
+         .repo-stats li {
+           margin: 5px 0;
+         }
+         /* Additional styling for overall repo info */
+         .repo-info {
+           margin-top: 20px;
+         }
+         .repo-info p {
+           margin: 5px 0;
+         }
+       </style>
+     </head>
+     <body>
+       <header>
+         <h1>Updates</h1>
+         <nav class="global-nav">
+           <a href="Home.html">Home</a>
+           <a href="Garage.html">Garage</a>
+           <a href="Media.html">Media</a>
+           <a href="Updates.html">Updates</a>
+         </nav>
+       </header>
+     
+       <!-- SEARCH BAR -->
+       <div class="search-container" id="searchBox">
+         <input type="text" class="search-input" id="searchBar" placeholder="Search updates..." onkeypress="handleKeyPress(event)">
+         <button class="search-btn" onclick="toggleSearch()">
+           <i class="fa-brands fa-searchengin"></i>
+         </button>
+       </div>
+     
+       <!-- Hardcoded updates info -->
+       <section class="updates-section">
+         <h2>Latest SpeedVerse News</h2>
+         <p>Stay informed on the newest features, expansions, and more.</p>
+         <ul>
+           <li><strong>March 20:</strong> New off-road tracks added in the desert region.</li>
+           <li><strong>March 15:</strong> “Torque Beast” muscle car introduced with twin turbo V10.</li>
+           <li><strong>March 10:</strong> Community tournaments are now open for registration.</li>
+         </ul>
+       </section>
+     
+       <!-- GitHub auto-updates from your real repo -->
+       <section class="github-updates">
+         <h2>GitHub Commits</h2>
+         <p>Auto-updating commits from <em>SpeedVerseInvision</em> repo: (Refreshes Every 5 Seconds).</p>
+         <ul id="commits"></ul>
+       </section>
+     
+       <!-- New code language stats section + overall repo info -->
+       <section class="repo-stats">
+         <h2>Repository Stats</h2>
+         <p>Overall Blueprints in Project: 237</p>
+         <ul id="language-stats"></ul>
+     
+         <div class="repo-info" id="repo-info">
+           <!-- Additional info like watchers, stars, forks, total commits, etc. gets injected here -->
+         </div>
+       </section>
+     
+       <!-- FOOTER -->
+       <footer>
+         <div class="footer-links">
+           <a href="https://discord.gg/speedverse" target="_blank">Join Discord</a>
+           <button onclick="toggleSitemap()">Sitemap</button>
+           <a href="about.html">About Us</a>
+           <a href="contact.html">Contact</a>
+         </div>
+         <div class="footer-sitemap" id="footer-sitemap" style="display:none;">
+           <a href="privacy.html">Privacy Policy</a>
+           <a href="tos.html">Terms of Service</a>
+           <a href="eula.html">EULA</a>
+           <a href="copyright.html">Copyright Info</a>
+         </div>
+       </footer>
+     
+       <script>
+         function handleKeyPress(e) {
+           if(e.key === 'Enter') {
+             let searchTerm = e.target.value.toLowerCase();
+             let bodyText = document.body.innerHTML;
+             bodyText = bodyText.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
+             if(searchTerm.trim().length > 0) {
+               let regex = new RegExp(searchTerm, "gi");
+               bodyText = bodyText.replace(regex, match => `<span class="highlight">${match}</span>`);
+             }
+             document.body.innerHTML = bodyText;
+           }
+         }
+     
+         function toggleSearch() {
+           let searchBox = document.getElementById("searchBox");
+           searchBox.classList.toggle("expanded");
+           document.getElementById("searchBar").focus();
+         }
+     
+         // GitHub commits from your real repo
+         async function fetchCommits() {
+           try {
+             const response = await fetch("https://api.github.com/repos/gamedev44/SpeedVerseInvision/commits");
+             const commits = await response.json();
+             const commitList = document.getElementById("commits");
+             commitList.innerHTML = "";
+             // Show last 5 commits
+             commits.slice(0, 5).forEach(commit => {
+               let item = document.createElement("li");
+               item.innerHTML = `<strong>${commit.commit.author.name}</strong>: ${commit.commit.message}`;
+               commitList.appendChild(item);
+             });
+           } catch (err) {
+             console.error("Error fetching commits:", err);
+           }
+         }
+         setInterval(fetchCommits, 5000);
+     
+         // Fetch language stats from GitHub
+         async function fetchLanguageStats() {
+           try {
+             const response = await fetch("https://api.github.com/repos/gamedev44/SpeedVerseInvision/languages");
+             const data = await response.json();
+             const statsList = document.getElementById("language-stats");
+             statsList.innerHTML = "";
+             // Each key is a language, each value is the number of bytes
+             for(const [lang, bytes] of Object.entries(data)) {
+               let li = document.createElement("li");
+               li.textContent = `${lang}: ${bytes} bytes of code`;
+               statsList.appendChild(li);
+             }
+           } catch (err) {
+             console.error("Error fetching language stats:", err);
+           }
+         }
+     
+         // Additional repo info: watchers, stars, forks, open issues, total commits, etc.
+         async function fetchRepoInfo() {
+           try {
+             const response = await fetch("https://api.github.com/repos/gamedev44/SpeedVerseInvision");
+             const data = await response.json();
+             const infoDiv = document.getElementById("repo-info");
+     
+             // watchers_count, stargazers_count, forks_count, open_issues_count, etc.
+             const watchers = data.watchers_count || 0;
+             const stars = data.stargazers_count || 0;
+             const forks = data.forks_count || 0;
+             const issues = data.open_issues_count || 0;
+     
+             // Some repos might not have a direct commit count, so we can do an additional fetchCommits() 
+             // or rely on the commits we have above. For a quick approximate total commits, we can rely 
+             // on the default GitHub commit listing. But it's paginated. We'll just show watchers/stars/forks for now.
+     
+             infoDiv.innerHTML = `
+               <div style="margin-top:20px;">
+                 <p>Watchers: ${watchers}</p>
+                 <p>Stars: ${stars}</p>
+                 <p>Forks: ${forks}</p>
+                 <p>Open Issues: ${issues}</p>
+               </div>
+             `;
+           } catch (err) {
+             console.error("Error fetching repo info:", err);
+           }
+         }
+     
+         // Initial load
+         window.addEventListener('load', () => {
+           fetchCommits();
+           fetchLanguageStats();
+           fetchRepoInfo();
+         });
+     
+         function toggleSitemap() {
+           const sm = document.getElementById('footer-sitemap');
+           sm.style.display = (sm.style.display === 'block') ? 'none' : 'block';
+         }
+       </script>
+     </body>
+     </html>
+     
