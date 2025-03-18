@@ -3,141 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
   <title>SpeedVerse.com - HomePage | HQ</title>
   
-  <!-- FontAwesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
-  <!-- Global CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
   <header>
     <h1>SpeedVerse</h1>
     <nav class="global-nav">
-      <a href="home.html">Home</a>
-      <a href="garage.html">Garage</a>
-      <a href="media.html">Media</a>
-      <a href="updates.html">Updates</a>
+      <a href="Home.html">Home</a>
+      <a href="Garage.html">Garage</a>
+      <a href="Media.html">Media</a>
+      <a href="Updates.html">Updates</a>
     </nav>
   </header>
 
+  <!-- SEARCH BAR -->
   <div class="search-container" id="searchBox">
-    <input type="text" class="search-input" id="searchBar" placeholder="Search for a car..." onkeypress="handleKeyPress(event)">
+    <input type="text" class="search-input" id="searchBar" placeholder="Search for text..." onkeypress="handleKeyPress(event)">
     <button class="search-btn" onclick="toggleSearch()">
       <i class="fa-brands fa-searchengin"></i>
     </button>
   </div>
 
-  <nav class="main-nav">
-    <a href="#" onclick="setMainActive(this); loadDatabase('HomePageData.json')">Home Page</a>
-  </nav>
+  <!-- MAIN CONTENT (previously from HomePageData.json) -->
+  <section class="homepage-header">
+    <h2>Welcome to SpeedVerse - The Ultimate Racing Experience</h2>
+    <p>High-speed performance, extreme endurance, and off-road dominance - all in one place.</p>
+  </section>
 
-  <!-- This div will be populated dynamically -->
-  <div id="main-content"></div>
+  <section class="hero-section">
+    <img src="images/homepage/hero-banner.jpg" alt="Hero Banner">
+    <p>Explore the world of high-performance vehicles built for speed, durability, and cutting-edge technology.</p>
+  </section>
+
+  <section class="main-content">
+    <h2>Experience the Future of Racing</h2>
+    <p>From muscle cars to extreme off-roaders, SpeedVerse offers a dynamic garage of high-performance vehicles. Built with cutting-edge technology, these machines push the limits of engineering and power.</p>
+
+    <h2>Dynamic Racing Worlds</h2>
+    <p>Compete in the toughest terrains, from urban tracks to wild desert dunes. Each vehicle is meticulously crafted to handle unique racing challenges.</p>
+
+    <h2>Extreme Customization</h2>
+    <p>Modify and upgrade your rides with performance kits, tuning adjustments, and custom bodywork. Make every ride your own.</p>
+  </section>
+
+  <section class="media-gallery">
+    <img src="images/homepage/media1.jpg" alt="Media 1">
+    <img src="images/homepage/media2.jpg" alt="Media 2">
+    <img src="images/homepage/media3.jpg" alt="Media 3">
+    <img src="images/homepage/media4.jpg" alt="Media 4">
+  </section>
+
+  <section class="video-spotlight">
+    <video controls>
+      <source src="videos/homepage-intro.mp4" type="video/mp4">
+    </video>
+    <p>SpeedVerse Official Trailer - Get ready for the most intense racing experience ever.</p>
+  </section>
+
+  <section class="call-to-action">
+    <a href="garage.html">Enter the Garage</a>
+    <a href="media.html">Watch Racing Action</a>
+    <a href="updates.html">Stay Updated</a>
+  </section>
+
+  <!-- FOOTER with JSON-based links turned into static links + a sitemap toggle -->
+  <footer>
+    <div class="footer-links">
+      <a href="https://discord.gg/speedverse" target="_blank">Discord</a>
+      <button onclick="toggleSitemap()">Sitemap</button>
+      <a href="info.html" target="_blank">Info</a>
+      <a href="about.html" target="_blank">About Us</a>
+      <a href="contact.html" target="_blank">Contact</a>
+      <a href="privacy.html" target="_blank">Privacy Policy</a>
+      <a href="eula.html" target="_blank">EULA</a>
+      <a href="copyright.html" target="_blank">Copyright Info</a>
+    </div>
+    <div class="footer-sitemap" id="footer-sitemap" style="display:none;">
+      <!-- Additional or duplicate links if needed -->
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="tos.html">Terms of Service</a>
+      <a href="eula.html">EULA</a>
+      <a href="copyright.html">Copyright Info</a>
+    </div>
+  </footer>
 
   <script>
-    let currentMainNav = null;
-    let currentCategoryNav = null;
-
-    async function loadDatabase(dbFile) {
-      const response = await fetch(dbFile);
-      const data = await response.json();
-      let homeHTML = "";
-
-      if (data.Homepage) {
-        homeHTML += `<section class="homepage-header">
-                      <h2>${data.Homepage.WelcomeTitle}</h2>
-                      <p>${data.Homepage.WelcomeSubtitle}</p>
-                    </section>`;
-      }
-
-      if (data.HeroSection) {
-        homeHTML += `<section class="hero-section">
-                      <img src="${data.HeroSection.HeroImage}" alt="Hero Banner">
-                      <p>${data.HeroSection.HeroText}</p>
-                    </section>`;
-      }
-
-      if (data.MainContent) {
-        homeHTML += `<section class="main-content">
-                      <h2>${data.MainContent.ContentHeader1}</h2>
-                      <p>${data.MainContent.ContentText1}</p>
-                      <h2>${data.MainContent.ContentHeader2}</h2>
-                      <p>${data.MainContent.ContentText2}</p>
-                      <h2>${data.MainContent.ContentHeader3}</h2>
-                      <p>${data.MainContent.ContentText3}</p>
-                    </section>`;
-      }
-
-      if (data.MediaGallery) {
-        homeHTML += `<section class="media-gallery">`;
-        for (let i = 1; i <= data.MediaGallery.TotalImages; i++) {
-          let key = "Image" + i;
-          homeHTML += `<img src="${data.MediaGallery[key]}" alt="Media ${i}">`;
-        }
-        homeHTML += `</section>`;
-      }
-
-      if (data.VideoSpotlight) {
-        homeHTML += `<section class="video-spotlight">
-                      <video controls>
-                        <source src="${data.VideoSpotlight.Video1}" type="video/mp4">
-                      </video>
-                      <p>${data.VideoSpotlight.VideoText1}</p>
-                    </section>`;
-      }
-
-      if (data.CallToAction) {
-        homeHTML += `<section class="call-to-action">`;
-        for (let key in data.CallToAction) {
-          if (data.CallToAction.hasOwnProperty(key)) {
-            let parts = data.CallToAction[key].split("|");
-            homeHTML += `<a href="${parts[1]}">${parts[0]}</a>`;
-          }
-        }
-        homeHTML += `</section>`;
-      }
-
-      // Insert the dynamic content into the placeholder div.
-      document.getElementById("main-content").innerHTML = homeHTML;
-
-      if (data.Footer) {
-        let footerHTML = `<footer>`;
-        for (let key in data.Footer) {
-          if (data.Footer.hasOwnProperty(key)) {
-            let parts = data.Footer[key].split("|");
-            footerHTML += `<a href="${parts[1]}">${parts[0]}</a> `;
-          }
-        }
-        footerHTML += `</footer>`;
-        // Append footer to the body.
-        document.body.innerHTML += footerHTML;
-      }
-    }
-
     function toggleSearch() {
       let searchBox = document.getElementById("searchBox");
       searchBox.classList.toggle("expanded");
       document.getElementById("searchBar").focus();
     }
 
-    function setMainActive(element) {
-      if (currentMainNav) {
-        currentMainNav.classList.remove("active");
+    // Simple search: highlights text matches
+    function handleKeyPress(e) {
+      if(e.key === 'Enter') {
+        let searchTerm = e.target.value.toLowerCase();
+        let bodyText = document.body.innerHTML;
+        // Remove old highlights
+        bodyText = bodyText.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
+        if(searchTerm.trim().length > 0) {
+          // Basic highlight approach
+          let regex = new RegExp(searchTerm, "gi");
+          bodyText = bodyText.replace(regex, match => `<span class="highlight">${match}</span>`);
+        }
+        document.body.innerHTML = bodyText;
       }
-      element.classList.add("active");
-      currentMainNav = element;
     }
 
-    function setCategoryActive(element) {
-      if (currentCategoryNav) {
-        currentCategoryNav.classList.remove("active");
-      }
-      element.classList.add("active");
-      currentCategoryNav = element;
+    function toggleSitemap() {
+      const sm = document.getElementById('footer-sitemap');
+      sm.style.display = (sm.style.display === 'block') ? 'none' : 'block';
     }
   </script>
 </body>
-<footer> discord links | sitemap | info | about us | Contact | Privacy Policy | EULA | Copywrite Info
 </html>

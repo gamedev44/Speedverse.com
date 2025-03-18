@@ -3,104 +3,399 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
   <title>SpeedVerse - Verse Garage</title>
   
-  <!-- FontAwesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
-  <!-- Global CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
   <header>
     <h1>Verse Garage</h1>
     <nav class="global-nav">
-      <a href="home.html">Home</a>
-      <a href="garage.html">Garage</a>
-      <a href="media.html">Media</a>
-      <a href="updates.html">Updates</a>
+      <a href="Home.html">Home</a>
+      <a href="Garage.html">Garage</a>
+      <a href="Media.html">Media</a>
+      <a href="Updates.html">Updates</a>
     </nav>
   </header>
 
+  <!-- SEARCH BAR -->
   <div class="search-container" id="searchBox">
-    <input type="text" class="search-input" id="searchBar" placeholder="Search for a car..." onkeypress="handleKeyPress(event)">
+    <input type="text" class="search-input" id="searchBar" placeholder="Search cars..." onkeypress="handleKeyPress(event)">
     <button class="search-btn" onclick="toggleSearch()">
       <i class="fa-brands fa-searchengin"></i>
     </button>
   </div>
 
+  <!-- MAIN NAV FOR Onroad / Offroad -->
   <nav class="main-nav">
-    <a href="#" onclick="setMainActive(this); loadDatabase('onroad-db.json')">Onroad</a>
-    <a href="#" onclick="setMainActive(this); loadDatabase('offroad-db.json')">Offroad</a>
+    <a href="#" onclick="showMain('onroad'); setMainActive(this)">Onroad</a>
+    <a href="#" onclick="showMain('offroad'); setMainActive(this)">Offroad</a>
   </nav>
 
+  <!-- SECONDARY NAV for categories -->
   <nav class="secondary-nav" id="category-nav">
-    <a href="#" onclick="setCategoryActive(this); showCategory('Sport')">Sport</a>
-    <a href="#" onclick="setCategoryActive(this); showCategory('Casual')">Casual</a>
-    <a href="#" onclick="setCategoryActive(this); showCategory('Muscle')">Muscle</a>
-    <a href="#" onclick="setCategoryActive(this); showCategory('Endurance')">Endurance</a>
-    <a href="#" onclick="setCategoryActive(this); showCategory('Exotic')">Exotic</a>
-    <a href="#" onclick="setCategoryActive(this); showCategory('XRS')">XRS</a>
+    <a href="#" onclick="showCategory('Sport'); setCategoryActive(this)">Sport</a>
+    <a href="#" onclick="showCategory('Casual'); setCategoryActive(this)">Casual</a>
+    <a href="#" onclick="showCategory('Muscle'); setCategoryActive(this)">Muscle</a>
+    <a href="#" onclick="showCategory('Endurance'); setCategoryActive(this)">Endurance</a>
+    <a href="#" onclick="showCategory('Exotic'); setCategoryActive(this)">Exotic</a>
+    <a href="#" onclick="showCategory('XRS'); setCategoryActive(this)">XRS</a>
   </nav>
 
-  <div id="categories-container"></div>
+  <!-- ONROAD CARS (HIDDEN BY DEFAULT) -->
+  <div id="onroad" style="display:none;">
+    <!-- Sport -->
+    <div id="Sport-onroad" class="category-content">
+      <h2>Sport</h2>
+      <!-- Car1-Sport -->
+      <div class="car-item">
+        <h3>Speed Demon</h3>
+        <img src="images/onroad/speed-demon.jpg" alt="Speed Demon">
+        <p><strong>HP:</strong> 800</p>
+        <p><strong>Engine:</strong> Twin Turbo V8</p>
+        <p><strong>Weight:</strong> 2800 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.9 sec</p>
+        <p><strong>Top Speed:</strong> 220 mph</p>
+      </div>
+      <!-- Car2-Sport -->
+      <div class="car-item">
+        <h3>Track King</h3>
+        <img src="images/onroad/track-king.jpg" alt="Track King">
+        <p><strong>HP:</strong> 900</p>
+        <p><strong>Engine:</strong> Naturally Aspirated V10</p>
+        <p><strong>Weight:</strong> 3200 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.7 sec</p>
+        <p><strong>Top Speed:</strong> 230 mph</p>
+      </div>
+    </div>
+
+    <!-- Casual -->
+    <div id="Casual-onroad" class="category-content" style="display:none;">
+      <h2>Casual</h2>
+      <!-- Car1-Casual -->
+      <div class="car-item">
+        <h3>Urban Cruiser</h3>
+        <img src="images/onroad/urban-cruiser.jpg" alt="Urban Cruiser">
+        <p><strong>HP:</strong> 450</p>
+        <p><strong>Engine:</strong> Turbo Inline-6</p>
+        <p><strong>Weight:</strong> 3500 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 4.8 sec</p>
+        <p><strong>Top Speed:</strong> 160 mph</p>
+      </div>
+      <!-- Car2-Casual -->
+      <div class="car-item">
+        <h3>City Racer</h3>
+        <img src="images/onroad/city-racer.jpg" alt="City Racer">
+        <p><strong>HP:</strong> 500</p>
+        <p><strong>Engine:</strong> Twin Turbo V6</p>
+        <p><strong>Weight:</strong> 3400 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 4.5 sec</p>
+        <p><strong>Top Speed:</strong> 170 mph</p>
+      </div>
+    </div>
+
+    <!-- Muscle -->
+    <div id="Muscle-onroad" class="category-content" style="display:none;">
+      <h2>Muscle</h2>
+      <!-- Car1-Muscle -->
+      <div class="car-item">
+        <h3>Street Dominator</h3>
+        <img src="images/onroad/street-dominator.jpg" alt="Street Dominator">
+        <p><strong>HP:</strong> 750</p>
+        <p><strong>Engine:</strong> Supercharged V8</p>
+        <p><strong>Weight:</strong> 3800 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 3.5 sec</p>
+        <p><strong>Top Speed:</strong> 200 mph</p>
+      </div>
+      <!-- Car2-Muscle -->
+      <div class="car-item">
+        <h3>Torque Beast</h3>
+        <img src="images/onroad/torque-beast.jpg" alt="Torque Beast">
+        <p><strong>HP:</strong> 900</p>
+        <p><strong>Engine:</strong> Twin Turbo V10</p>
+        <p><strong>Weight:</strong> 3900 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 3.2 sec</p>
+        <p><strong>Top Speed:</strong> 210 mph</p>
+      </div>
+    </div>
+
+    <!-- Endurance -->
+    <div id="Endurance-onroad" class="category-content" style="display:none;">
+      <h2>Endurance</h2>
+      <!-- Car1-Endurance -->
+      <div class="car-item">
+        <h3>Marathon King</h3>
+        <img src="images/onroad/marathon-king.jpg" alt="Marathon King">
+        <p><strong>HP:</strong> 650</p>
+        <p><strong>Engine:</strong> Hybrid Turbo V6</p>
+        <p><strong>Weight:</strong> 3500 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 4.2 sec</p>
+        <p><strong>Top Speed:</strong> 185 mph</p>
+      </div>
+      <!-- Car2-Endurance -->
+      <div class="car-item">
+        <h3>Road Titan</h3>
+        <img src="images/onroad/road-titan.jpg" alt="Road Titan">
+        <p><strong>HP:</strong> 700</p>
+        <p><strong>Engine:</strong> Diesel-Electric Hybrid</p>
+        <p><strong>Weight:</strong> 3700 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 4.0 sec</p>
+        <p><strong>Top Speed:</strong> 190 mph</p>
+      </div>
+    </div>
+
+    <!-- Exotic -->
+    <div id="Exotic-onroad" class="category-content" style="display:none;">
+      <h2>Exotic</h2>
+      <!-- Car1-Exotic -->
+      <div class="car-item">
+        <h3>Phantom Hyper</h3>
+        <img src="images/onroad/phantom-hyper.jpg" alt="Phantom Hyper">
+        <p><strong>HP:</strong> 1100</p>
+        <p><strong>Engine:</strong> Quad Turbocharged V12</p>
+        <p><strong>Weight:</strong> 2900 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.5 sec</p>
+        <p><strong>Top Speed:</strong> 250 mph</p>
+      </div>
+      <!-- Car2-Exotic -->
+      <div class="car-item">
+        <h3>Venom GTX</h3>
+        <img src="images/onroad/venom-gtx.jpg" alt="Venom GTX">
+        <p><strong>HP:</strong> 1250</p>
+        <p><strong>Engine:</strong> Supercharged Hybrid V10</p>
+        <p><strong>Weight:</strong> 2800 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.3 sec</p>
+        <p><strong>Top Speed:</strong> 260 mph</p>
+      </div>
+    </div>
+
+    <!-- XRS -->
+    <div id="XRS-onroad" class="category-content" style="display:none;">
+      <h2>XRS</h2>
+      <!-- Car1-XRS -->
+      <div class="car-item">
+        <h3>Apex Predator</h3>
+        <img src="images/onroad/xrs-apex-predator.jpg" alt="Apex Predator">
+        <p><strong>HP:</strong> 1400</p>
+        <p><strong>Engine:</strong> Twin-Turbo Hybrid V8</p>
+        <p><strong>Weight:</strong> 3200 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.1 sec</p>
+        <p><strong>Top Speed:</strong> 275 mph</p>
+      </div>
+      <!-- Car2-XRS -->
+      <div class="car-item">
+        <h3>Dune Devil</h3>
+        <img src="images/onroad/xrs-dune-devil.jpg" alt="Dune Devil">
+        <p><strong>HP:</strong> 1100</p>
+        <p><strong>Engine:</strong> Turbocharged V8</p>
+        <p><strong>Weight:</strong> 3000 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.7 sec</p>
+        <p><strong>Top Speed:</strong> 245 mph</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OFFROAD CARS (HIDDEN BY DEFAULT) -->
+  <div id="offroad" style="display:none;">
+    <!-- Sport -->
+    <div id="Sport-offroad" class="category-content">
+      <h2>Sport</h2>
+      <!-- Car1-Sport -->
+      <div class="car-item">
+        <h3>Speed Demon</h3>
+        <img src="images/offroad/speed-demon.jpg" alt="Speed Demon">
+        <p><strong>HP:</strong> 800</p>
+        <p><strong>Engine:</strong> Twin Turbo V8</p>
+        <p><strong>Weight:</strong> 2800 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.9 sec</p>
+        <p><strong>Top Speed:</strong> 220 mph</p>
+      </div>
+      <!-- Car2-Sport -->
+      <div class="car-item">
+        <h3>Track King</h3>
+        <img src="images/offroad/track-king.jpg" alt="Track King">
+        <p><strong>HP:</strong> 900</p>
+        <p><strong>Engine:</strong> Naturally Aspirated V10</p>
+        <p><strong>Weight:</strong> 3200 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.7 sec</p>
+        <p><strong>Top Speed:</strong> 230 mph</p>
+      </div>
+    </div>
+
+    <!-- Casual -->
+    <div id="Casual-offroad" class="category-content" style="display:none;">
+      <h2>Casual</h2>
+      <!-- Car1-Casual -->
+      <div class="car-item">
+        <h3>Urban Cruiser</h3>
+        <img src="images/offroad/urban-cruiser.jpg" alt="Urban Cruiser">
+        <p><strong>HP:</strong> 450</p>
+        <p><strong>Engine:</strong> Turbo Inline-6</p>
+        <p><strong>Weight:</strong> 3500 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 4.8 sec</p>
+        <p><strong>Top Speed:</strong> 160 mph</p>
+      </div>
+      <!-- Car2-Casual -->
+      <div class="car-item">
+        <h3>City Racer</h3>
+        <img src="images/offroad/city-racer.jpg" alt="City Racer">
+        <p><strong>HP:</strong> 500</p>
+        <p><strong>Engine:</strong> Twin Turbo V6</p>
+        <p><strong>Weight:</strong> 3400 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 4.5 sec</p>
+        <p><strong>Top Speed:</strong> 170 mph</p>
+      </div>
+    </div>
+
+    <!-- Muscle -->
+    <div id="Muscle-offroad" class="category-content" style="display:none;">
+      <h2>Muscle</h2>
+      <!-- Car1-Muscle -->
+      <div class="car-item">
+        <h3>Street Dominator</h3>
+        <img src="images/offroad/street-dominator.jpg" alt="Street Dominator">
+        <p><strong>HP:</strong> 750</p>
+        <p><strong>Engine:</strong> Supercharged V8</p>
+        <p><strong>Weight:</strong> 3800 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 3.5 sec</p>
+        <p><strong>Top Speed:</strong> 200 mph</p>
+      </div>
+      <!-- Car2-Muscle -->
+      <div class="car-item">
+        <h3>Torque Beast</h3>
+        <img src="images/offroad/torque-beast.jpg" alt="Torque Beast">
+        <p><strong>HP:</strong> 900</p>
+        <p><strong>Engine:</strong> Twin Turbo V10</p>
+        <p><strong>Weight:</strong> 3900 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 3.2 sec</p>
+        <p><strong>Top Speed:</strong> 210 mph</p>
+      </div>
+    </div>
+
+    <!-- Endurance -->
+    <div id="Endurance-offroad" class="category-content" style="display:none;">
+      <h2>Endurance</h2>
+      <!-- Car1-Endurance -->
+      <div class="car-item">
+        <h3>Marathon King</h3>
+        <img src="images/offroad/marathon-king.jpg" alt="Marathon King">
+        <p><strong>HP:</strong> 650</p>
+        <p><strong>Engine:</strong> Hybrid Turbo V6</p>
+        <p><strong>Weight:</strong> 3500 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 4.2 sec</p>
+        <p><strong>Top Speed:</strong> 185 mph</p>
+      </div>
+      <!-- Car2-Endurance -->
+      <div class="car-item">
+        <h3>Road Titan</h3>
+        <img src="images/offroad/road-titan.jpg" alt="Road Titan">
+        <p><strong>HP:</strong> 700</p>
+        <p><strong>Engine:</strong> Diesel-Electric Hybrid</p>
+        <p><strong>Weight:</strong> 3700 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 4.0 sec</p>
+        <p><strong>Top Speed:</strong> 190 mph</p>
+      </div>
+    </div>
+
+    <!-- Exotic -->
+    <div id="Exotic-offroad" class="category-content" style="display:none;">
+      <h2>Exotic</h2>
+      <!-- Car1-Exotic -->
+      <div class="car-item">
+        <h3>Phantom Hyper</h3>
+        <img src="images/offroad/phantom-hyper.jpg" alt="Phantom Hyper">
+        <p><strong>HP:</strong> 1100</p>
+        <p><strong>Engine:</strong> Quad Turbocharged V12</p>
+        <p><strong>Weight:</strong> 2900 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.5 sec</p>
+        <p><strong>Top Speed:</strong> 250 mph</p>
+      </div>
+      <!-- Car2-Exotic -->
+      <div class="car-item">
+        <h3>Venom GTX</h3>
+        <img src="images/offroad/venom-gtx.jpg" alt="Venom GTX">
+        <p><strong>HP:</strong> 1250</p>
+        <p><strong>Engine:</strong> Supercharged Hybrid V10</p>
+        <p><strong>Weight:</strong> 2800 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.3 sec</p>
+        <p><strong>Top Speed:</strong> 260 mph</p>
+      </div>
+    </div>
+
+    <!-- XRS -->
+    <div id="XRS-offroad" class="category-content" style="display:none;">
+      <h2>XRS</h2>
+      <!-- Car1-XRS -->
+      <div class="car-item">
+        <h3>Apex Predator</h3>
+        <img src="images/offroad/xrs-apex-predator.jpg" alt="Apex Predator">
+        <p><strong>HP:</strong> 1400</p>
+        <p><strong>Engine:</strong> Twin-Turbo Hybrid V8</p>
+        <p><strong>Weight:</strong> 3200 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.1 sec</p>
+        <p><strong>Top Speed:</strong> 275 mph</p>
+      </div>
+      <!-- Car2-XRS -->
+      <div class="car-item">
+        <h3>Dune Devil</h3>
+        <img src="images/offroad/xrs-dune-devil.jpg" alt="Dune Devil">
+        <p><strong>HP:</strong> 1100</p>
+        <p><strong>Engine:</strong> Turbocharged V8</p>
+        <p><strong>Weight:</strong> 3000 lbs</p>
+        <p><strong>0-60 Acceleration:</strong> 2.7 sec</p>
+        <p><strong>Top Speed:</strong> 245 mph</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-links">
+      <a href="https://discord.gg/speedverse" target="_blank">Join Discord</a>
+      <button onclick="toggleSitemap()">Sitemap</button>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-sitemap" id="footer-sitemap" style="display:none;">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="tos.html">Terms of Service</a>
+      <a href="eula.html">EULA</a>
+      <a href="copyright.html">Copyright Info</a>
+    </div>
+  </footer>
 
   <script>
-    let currentMainNav = null;
-    let currentCategoryNav = null;
-
-    async function loadDatabase(dbFile) {
-      const response = await fetch(dbFile);
-      const data = await response.json();
-      let categoriesHTML = "";
-      let carGroups = {};
-
-      // Group cars by their category (using key naming: "CarX-Category")
-      for (const key in data) {
-        if (key.startsWith("Car") && !key.includes("Specs")) {
-          let parts = key.split("-");
-          let category = parts.slice(1).join("-"); // e.g. "Muscle", "Sport", etc.
-          if (!carGroups[category]) {
-            carGroups[category] = [];
-          }
-          let specsKey = key + "-Specs";
-          carGroups[category].push({
-            info: data[key],
-            specs: data[specsKey] || {}
-          });
+    // SEARCH: highlight matches in the entire page
+    function handleKeyPress(e) {
+      if(e.key === 'Enter') {
+        let searchTerm = e.target.value.toLowerCase();
+        let bodyText = document.body.innerHTML;
+        // Remove old highlights
+        bodyText = bodyText.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
+        if(searchTerm.trim().length > 0) {
+          let regex = new RegExp(searchTerm, "gi");
+          bodyText = bodyText.replace(regex, match => `<span class="highlight">${match}</span>`);
         }
+        document.body.innerHTML = bodyText;
       }
-
-      // Build HTML for each category with its cars
-      for (const category in carGroups) {
-        categoriesHTML += `<div id="${category}" class="category-content"><h2>${category}</h2>`;
-        carGroups[category].forEach(car => {
-          categoriesHTML += `
-            <div class="car-item">
-              <h3>${car.info.CarName}</h3>
-              <img src="${car.info.CarMainIMG}" alt="${car.info.CarName}">
-              <p><strong>HP:</strong> ${car.specs.HP || "N/A"}</p>
-              <p><strong>Engine:</strong> ${car.specs.Engine || "N/A"}</p>
-              <p><strong>Weight:</strong> ${car.specs.Weight || "N/A"}</p>
-              <p><strong>0-60 Acceleration:</strong> ${car.specs["Acceleration_0-60"] || "N/A"}</p>
-              <p><strong>Top Speed:</strong> ${car.specs.TopSpeed || "N/A"}</p>
-            </div>
-          `;
-        });
-        categoriesHTML += `</div>`;
-      }
-      document.getElementById("categories-container").innerHTML = categoriesHTML;
-    }
-
-    function showCategory(category) {
-      document.querySelectorAll(".category-content").forEach(el => el.style.display = "none");
-      document.getElementById(category).style.display = "block";
     }
 
     function toggleSearch() {
       let searchBox = document.getElementById("searchBox");
       searchBox.classList.toggle("expanded");
       document.getElementById("searchBar").focus();
+    }
+
+    let currentMainNav = null;
+    let currentCategoryNav = null;
+
+    // Show/hide entire Onroad vs Offroad
+    function showMain(which) {
+      document.getElementById("onroad").style.display = (which === 'onroad') ? 'block' : 'none';
+      document.getElementById("offroad").style.display = (which === 'offroad') ? 'block' : 'none';
     }
 
     function setMainActive(element) {
@@ -111,12 +406,31 @@
       currentMainNav = element;
     }
 
+    // Show/hide the categories within onroad/offroad
+    function showCategory(cat) {
+      // Hide all .category-content in whichever is visible
+      document.querySelectorAll(".category-content").forEach(el => el.style.display = "none");
+      // Show the correct one for onroad
+      if(document.getElementById(`${cat}-onroad`)) {
+        document.getElementById(`${cat}-onroad`).style.display = "block";
+      }
+      // Show the correct one for offroad
+      if(document.getElementById(`${cat}-offroad`)) {
+        document.getElementById(`${cat}-offroad`).style.display = "block";
+      }
+    }
+
     function setCategoryActive(element) {
       if (currentCategoryNav) {
         currentCategoryNav.classList.remove("active");
       }
       element.classList.add("active");
       currentCategoryNav = element;
+    }
+
+    function toggleSitemap() {
+      const sm = document.getElementById('footer-sitemap');
+      sm.style.display = (sm.style.display === 'block') ? 'none' : 'block';
     }
   </script>
 </body>

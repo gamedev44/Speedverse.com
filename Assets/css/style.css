@@ -6,22 +6,28 @@ body {
     margin: 0;
     padding: 0;
     text-align: center;
-}
-
-/* Header */
-header {
+  }
+  
+  /* Highlight from search */
+  .highlight {
+    background-color: yellow;
+    color: black;
+  }
+  
+  /* Header */
+  header {
     background-color: black;
     padding: 40px 20px;
     font-size: 2rem;
     text-transform: uppercase;
     border-bottom: 3px solid red;
     position: relative;
-}
-.logo {
+  }
+  .logo {
     size: 200%;
-}
-/* Global Navbar */
-.global-nav {
+  }
+  /* Global Navbar */
+  .global-nav {
     background-color: black;
     padding: 10px 0;
     display: flex;
@@ -29,26 +35,27 @@ header {
     gap: 20px;
     font-size: 1rem;
     text-transform: uppercase;
-}
-.global-nav a {
+  }
+  .global-nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
     padding: 10px 15px;
     transition: all 0.3s;
-}
-.global-nav a:hover, .global-nav a.active {
+  }
+  .global-nav a:hover,
+  .global-nav a.active {
     color: red;
-}
-
-/* Search Bar */
-.search-container {
+  }
+  
+  /* Search Bar */
+  .search-container {
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 20px auto;
-}
-.search-input {
+  }
+  .search-input {
     width: 0;
     padding: 10px;
     font-size: 1.2rem;
@@ -58,13 +65,13 @@ header {
     border-radius: 25px;
     transition: width 0.4s ease-in-out, padding 0.4s;
     opacity: 0;
-}
-.search-container.expanded .search-input {
+  }
+  .search-container.expanded .search-input {
     width: 300px;
     padding: 10px 15px;
     opacity: 1;
-}
-.search-btn {
+  }
+  .search-btn {
     background: transparent;
     color: red;
     padding: 10px;
@@ -72,13 +79,14 @@ header {
     cursor: pointer;
     font-size: 1.8rem;
     margin-left: 5px;
-}
-.search-btn:hover {
+  }
+  .search-btn:hover {
     color: white;
-}
-
-/* Garage Page - Main & Secondary Navbars */
-.main-nav, .secondary-nav {
+  }
+  
+  /* Navbars */
+  .main-nav,
+  .secondary-nav {
     background-color: #111;
     padding: 10px;
     font-size: 1.2rem;
@@ -86,22 +94,24 @@ header {
     display: flex;
     justify-content: center;
     gap: 20px;
-}
-.main-nav a, .secondary-nav a {
+  }
+  .main-nav a,
+  .secondary-nav a {
     color: grey;
     text-decoration: none;
     font-weight: bold;
     padding: 5px 10px;
     transition: color 0.3s, background 0.3s;
-}
-.main-nav a.active, .secondary-nav a.active {
+  }
+  .main-nav a.active,
+  .secondary-nav a.active {
     color: white;
     background: red;
     border-radius: 5px;
-}
-
-/* Category Bubbles */
-.category-bubble {
+  }
+  
+  /* Category Bubbles */
+  .category-bubble {
     background: #222;
     padding: 20px;
     margin: 30px auto;
@@ -109,24 +119,24 @@ header {
     border: 2px solid white;
     text-transform: uppercase;
     font-size: 1.2rem;
-}
-
-/* Car Items */
-.car-item {
+  }
+  
+  /* Car Items */
+  .car-item {
     background: #151515;
     padding: 10px;
     border: 2px solid white;
     box-shadow: 0px 0px 10px grey;
     margin-top: 15px;
-}
-.car-item img {
+  }
+  .car-item img {
     width: 100%;
     max-width: 500px;
     height: auto;
-}
-
-/* Updates Page */
-.updates-section {
+  }
+  
+  /* Updates Page */
+  .updates-section {
     background-color: #222;
     padding: 20px;
     margin: 20px auto;
@@ -134,28 +144,29 @@ header {
     border: 2px solid white;
     text-transform: uppercase;
     font-size: 1.2rem;
-}
-
-.github-updates {
+  }
+  
+  .github-updates {
     margin-top: 30px;
     padding: 20px;
     background-color: #151515;
     border: 2px solid red;
-}
-
-/* Footer */
-footer {
+  }
+  
+  /* Footer */
+  footer {
     background-color: black;
     padding: 15px;
     text-align: center;
     margin-top: 20px;
-}
-footer a {
+  }
+  footer a {
     color: white;
     text-decoration: none;
     margin: 0 15px;
     transition: color 0.3s;
-}
-footer a:hover {
+  }
+  footer a:hover {
     color: red;
-}
+  }
+  
