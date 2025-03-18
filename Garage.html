@@ -1,3 +1,4 @@
+<!-- Garage.html (updated to allow multiple main categories, multiple subcategories, and improved search handling) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +9,197 @@
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #0a0a0a;
+      color: white;
+      font-family: 'Russo One', sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .highlight {
+      background: linear-gradient(90deg, red, darkred);
+      color: white;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    header {
+      background-color: black;
+      padding: 40px 20px;
+      font-size: 2rem;
+      text-transform: uppercase;
+      border-bottom: 3px solid red;
+      position: relative;
+    }
+    .logo { size: 200%; }
+    .global-nav {
+      background-color: black;
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 1rem;
+      text-transform: uppercase;
+    }
+    .global-nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 10px 15px;
+      transition: all 0.3s;
+    }
+    .global-nav a:hover,
+    .global-nav a.active {
+      color: red;
+    }
+    .search-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto;
+      position: relative;
+    }
+    .search-input {
+      width: 0;
+      padding: 10px;
+      font-size: 1.2rem;
+      border: 2px solid white;
+      background: #222;
+      color: white;
+      border-radius: 25px;
+      transition: width 0.4s ease-in-out, padding 0.4s;
+      opacity: 0;
+    }
+    .search-container.expanded .search-input {
+      width: 300px;
+      padding: 10px 15px;
+      opacity: 1;
+    }
+    .search-btn {
+      background: transparent;
+      color: red;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 1.8rem;
+      margin-left: 5px;
+    }
+    .search-btn:hover {
+      color: white;
+    }
+    .search-dropdown {
+      display: none;
+      position: absolute;
+      top: 55px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111;
+      border: 2px solid red;
+      width: 300px;
+      max-height: 250px;
+      overflow-y: auto;
+      text-align: left;
+      z-index: 9999;
+    }
+    .search-dropdown div {
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: white;
+    }
+    .search-dropdown div:hover {
+      background: red;
+      color: black;
+    }
+    .main-nav,
+    .secondary-nav {
+      background-color: #111;
+      padding: 10px;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .main-nav a,
+    .secondary-nav a {
+      color: grey;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 5px 10px;
+      transition: color 0.3s, background 0.3s;
+    }
+    .main-nav a.active,
+    .secondary-nav a.active {
+      color: white;
+      background: red;
+      border-radius: 5px;
+    }
+    .category-bubble {
+      background: #222;
+      padding: 20px;
+      margin: 30px auto;
+      width: 80%;
+      border: 2px solid white;
+      text-transform: uppercase;
+      font-size: 1.2rem;
+    }
+    .car-item {
+      background: #151515;
+      padding: 10px;
+      border: 2px solid white;
+      box-shadow: 0px 0px 10px grey;
+      margin-top: 15px;
+    }
+    .car-item img {
+      width: 100%;
+      max-width: 500px;
+      height: auto;
+    }
+    .updates-section {
+      background-color: #222;
+      padding: 20px;
+      margin: 20px auto;
+      width: 80%;
+      border: 2px solid white;
+      text-transform: uppercase;
+      font-size: 1.2rem;
+    }
+    .github-updates {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #151515;
+      border: 2px solid red;
+    }
+    footer {
+      background-color: black;
+      padding: 15px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    footer a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      transition: color 0.3s;
+    }
+    footer a:hover {
+      color: red;
+    }
+    .footer-links {
+      margin-bottom: 10px;
+    }
+    .footer-sitemap {
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -21,37 +212,37 @@
     </nav>
   </header>
 
-  <!-- SEARCH BAR -->
   <div class="search-container" id="searchBox">
-    <input type="text" class="search-input" id="searchBar" placeholder="Search cars..." onkeypress="handleKeyPress(event)">
+    <input type="text" class="search-input" id="searchBar" placeholder="Search cars..." onkeypress="handleKeyPress(event)" oninput="showSuggestions(this.value)">
     <button class="search-btn" onclick="toggleSearch()">
       <i class="fa-brands fa-searchengin"></i>
     </button>
+    <div id="searchDropdown" class="search-dropdown"></div>
   </div>
 
-  <!-- MAIN NAV FOR Onroad / Offroad -->
+  <!-- MAIN NAV FOR Onroad / Offroad (now toggles) -->
   <nav class="main-nav">
-    <a href="#" onclick="showMain('onroad'); setMainActive(this)">Onroad</a>
-    <a href="#" onclick="showMain('offroad'); setMainActive(this)">Offroad</a>
+    <!-- Changed onclick to toggle instead of show/hide exclusively -->
+    <a href="#" onclick="toggleMainCategory('onroad', this)">Onroad</a>
+    <a href="#" onclick="toggleMainCategory('offroad', this)">Offroad</a>
   </nav>
 
-  <!-- SECONDARY NAV for categories -->
+  <!-- SECONDARY NAV for categories (now toggles multiple) -->
   <nav class="secondary-nav" id="category-nav">
-    <a href="#" onclick="showCategory('Sport'); setCategoryActive(this)">Sport</a>
-    <a href="#" onclick="showCategory('Casual'); setCategoryActive(this)">Casual</a>
-    <a href="#" onclick="showCategory('Muscle'); setCategoryActive(this)">Muscle</a>
-    <a href="#" onclick="showCategory('Endurance'); setCategoryActive(this)">Endurance</a>
-    <a href="#" onclick="showCategory('Exotic'); setCategoryActive(this)">Exotic</a>
-    <a href="#" onclick="showCategory('XRS'); setCategoryActive(this)">XRS</a>
+    <a href="#" onclick="toggleSubCategory('Sport', this)">Sport</a>
+    <a href="#" onclick="toggleSubCategory('Casual', this)">Casual</a>
+    <a href="#" onclick="toggleSubCategory('Muscle', this)">Muscle</a>
+    <a href="#" onclick="toggleSubCategory('Endurance', this)">Endurance</a>
+    <a href="#" onclick="toggleSubCategory('Exotic', this)">Exotic</a>
+    <a href="#" onclick="toggleSubCategory('XRS', this)">XRS</a>
   </nav>
 
-  <!-- ONROAD CARS (HIDDEN BY DEFAULT) -->
+  <!-- ONROAD CARS -->
   <div id="onroad" style="display:none;">
     <!-- Sport -->
     <div id="Sport-onroad" class="category-content">
       <h2>Sport</h2>
-      <!-- Car1-Sport -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="Sport">
         <h3>Speed Demon</h3>
         <img src="images/onroad/speed-demon.jpg" alt="Speed Demon">
         <p><strong>HP:</strong> 800</p>
@@ -60,8 +251,7 @@
         <p><strong>0-60 Acceleration:</strong> 2.9 sec</p>
         <p><strong>Top Speed:</strong> 220 mph</p>
       </div>
-      <!-- Car2-Sport -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="Sport">
         <h3>Track King</h3>
         <img src="images/onroad/track-king.jpg" alt="Track King">
         <p><strong>HP:</strong> 900</p>
@@ -71,12 +261,10 @@
         <p><strong>Top Speed:</strong> 230 mph</p>
       </div>
     </div>
-
     <!-- Casual -->
     <div id="Casual-onroad" class="category-content" style="display:none;">
       <h2>Casual</h2>
-      <!-- Car1-Casual -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="Casual">
         <h3>Urban Cruiser</h3>
         <img src="images/onroad/urban-cruiser.jpg" alt="Urban Cruiser">
         <p><strong>HP:</strong> 450</p>
@@ -85,8 +273,7 @@
         <p><strong>0-60 Acceleration:</strong> 4.8 sec</p>
         <p><strong>Top Speed:</strong> 160 mph</p>
       </div>
-      <!-- Car2-Casual -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="Casual">
         <h3>City Racer</h3>
         <img src="images/onroad/city-racer.jpg" alt="City Racer">
         <p><strong>HP:</strong> 500</p>
@@ -96,12 +283,10 @@
         <p><strong>Top Speed:</strong> 170 mph</p>
       </div>
     </div>
-
     <!-- Muscle -->
     <div id="Muscle-onroad" class="category-content" style="display:none;">
       <h2>Muscle</h2>
-      <!-- Car1-Muscle -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="Muscle">
         <h3>Street Dominator</h3>
         <img src="images/onroad/street-dominator.jpg" alt="Street Dominator">
         <p><strong>HP:</strong> 750</p>
@@ -110,8 +295,7 @@
         <p><strong>0-60 Acceleration:</strong> 3.5 sec</p>
         <p><strong>Top Speed:</strong> 200 mph</p>
       </div>
-      <!-- Car2-Muscle -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="Muscle">
         <h3>Torque Beast</h3>
         <img src="images/onroad/torque-beast.jpg" alt="Torque Beast">
         <p><strong>HP:</strong> 900</p>
@@ -121,12 +305,10 @@
         <p><strong>Top Speed:</strong> 210 mph</p>
       </div>
     </div>
-
     <!-- Endurance -->
     <div id="Endurance-onroad" class="category-content" style="display:none;">
       <h2>Endurance</h2>
-      <!-- Car1-Endurance -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="Endurance">
         <h3>Marathon King</h3>
         <img src="images/onroad/marathon-king.jpg" alt="Marathon King">
         <p><strong>HP:</strong> 650</p>
@@ -135,8 +317,7 @@
         <p><strong>0-60 Acceleration:</strong> 4.2 sec</p>
         <p><strong>Top Speed:</strong> 185 mph</p>
       </div>
-      <!-- Car2-Endurance -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="Endurance">
         <h3>Road Titan</h3>
         <img src="images/onroad/road-titan.jpg" alt="Road Titan">
         <p><strong>HP:</strong> 700</p>
@@ -146,12 +327,10 @@
         <p><strong>Top Speed:</strong> 190 mph</p>
       </div>
     </div>
-
     <!-- Exotic -->
     <div id="Exotic-onroad" class="category-content" style="display:none;">
       <h2>Exotic</h2>
-      <!-- Car1-Exotic -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="Exotic">
         <h3>Phantom Hyper</h3>
         <img src="images/onroad/phantom-hyper.jpg" alt="Phantom Hyper">
         <p><strong>HP:</strong> 1100</p>
@@ -160,8 +339,7 @@
         <p><strong>0-60 Acceleration:</strong> 2.5 sec</p>
         <p><strong>Top Speed:</strong> 250 mph</p>
       </div>
-      <!-- Car2-Exotic -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="Exotic">
         <h3>Venom GTX</h3>
         <img src="images/onroad/venom-gtx.jpg" alt="Venom GTX">
         <p><strong>HP:</strong> 1250</p>
@@ -171,12 +349,10 @@
         <p><strong>Top Speed:</strong> 260 mph</p>
       </div>
     </div>
-
     <!-- XRS -->
     <div id="XRS-onroad" class="category-content" style="display:none;">
       <h2>XRS</h2>
-      <!-- Car1-XRS -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="XRS">
         <h3>Apex Predator</h3>
         <img src="images/onroad/xrs-apex-predator.jpg" alt="Apex Predator">
         <p><strong>HP:</strong> 1400</p>
@@ -185,8 +361,7 @@
         <p><strong>0-60 Acceleration:</strong> 2.1 sec</p>
         <p><strong>Top Speed:</strong> 275 mph</p>
       </div>
-      <!-- Car2-XRS -->
-      <div class="car-item">
+      <div class="car-item" data-category="onroad" data-subcategory="XRS">
         <h3>Dune Devil</h3>
         <img src="images/onroad/xrs-dune-devil.jpg" alt="Dune Devil">
         <p><strong>HP:</strong> 1100</p>
@@ -198,13 +373,12 @@
     </div>
   </div>
 
-  <!-- OFFROAD CARS (HIDDEN BY DEFAULT) -->
+  <!-- OFFROAD CARS -->
   <div id="offroad" style="display:none;">
     <!-- Sport -->
     <div id="Sport-offroad" class="category-content">
       <h2>Sport</h2>
-      <!-- Car1-Sport -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="Sport">
         <h3>Speed Demon</h3>
         <img src="images/offroad/speed-demon.jpg" alt="Speed Demon">
         <p><strong>HP:</strong> 800</p>
@@ -213,8 +387,7 @@
         <p><strong>0-60 Acceleration:</strong> 2.9 sec</p>
         <p><strong>Top Speed:</strong> 220 mph</p>
       </div>
-      <!-- Car2-Sport -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="Sport">
         <h3>Track King</h3>
         <img src="images/offroad/track-king.jpg" alt="Track King">
         <p><strong>HP:</strong> 900</p>
@@ -224,12 +397,10 @@
         <p><strong>Top Speed:</strong> 230 mph</p>
       </div>
     </div>
-
     <!-- Casual -->
     <div id="Casual-offroad" class="category-content" style="display:none;">
       <h2>Casual</h2>
-      <!-- Car1-Casual -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="Casual">
         <h3>Urban Cruiser</h3>
         <img src="images/offroad/urban-cruiser.jpg" alt="Urban Cruiser">
         <p><strong>HP:</strong> 450</p>
@@ -238,8 +409,7 @@
         <p><strong>0-60 Acceleration:</strong> 4.8 sec</p>
         <p><strong>Top Speed:</strong> 160 mph</p>
       </div>
-      <!-- Car2-Casual -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="Casual">
         <h3>City Racer</h3>
         <img src="images/offroad/city-racer.jpg" alt="City Racer">
         <p><strong>HP:</strong> 500</p>
@@ -249,12 +419,10 @@
         <p><strong>Top Speed:</strong> 170 mph</p>
       </div>
     </div>
-
     <!-- Muscle -->
     <div id="Muscle-offroad" class="category-content" style="display:none;">
       <h2>Muscle</h2>
-      <!-- Car1-Muscle -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="Muscle">
         <h3>Street Dominator</h3>
         <img src="images/offroad/street-dominator.jpg" alt="Street Dominator">
         <p><strong>HP:</strong> 750</p>
@@ -263,8 +431,7 @@
         <p><strong>0-60 Acceleration:</strong> 3.5 sec</p>
         <p><strong>Top Speed:</strong> 200 mph</p>
       </div>
-      <!-- Car2-Muscle -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="Muscle">
         <h3>Torque Beast</h3>
         <img src="images/offroad/torque-beast.jpg" alt="Torque Beast">
         <p><strong>HP:</strong> 900</p>
@@ -274,12 +441,10 @@
         <p><strong>Top Speed:</strong> 210 mph</p>
       </div>
     </div>
-
     <!-- Endurance -->
     <div id="Endurance-offroad" class="category-content" style="display:none;">
       <h2>Endurance</h2>
-      <!-- Car1-Endurance -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="Endurance">
         <h3>Marathon King</h3>
         <img src="images/offroad/marathon-king.jpg" alt="Marathon King">
         <p><strong>HP:</strong> 650</p>
@@ -288,8 +453,7 @@
         <p><strong>0-60 Acceleration:</strong> 4.2 sec</p>
         <p><strong>Top Speed:</strong> 185 mph</p>
       </div>
-      <!-- Car2-Endurance -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="Endurance">
         <h3>Road Titan</h3>
         <img src="images/offroad/road-titan.jpg" alt="Road Titan">
         <p><strong>HP:</strong> 700</p>
@@ -299,12 +463,10 @@
         <p><strong>Top Speed:</strong> 190 mph</p>
       </div>
     </div>
-
     <!-- Exotic -->
     <div id="Exotic-offroad" class="category-content" style="display:none;">
       <h2>Exotic</h2>
-      <!-- Car1-Exotic -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="Exotic">
         <h3>Phantom Hyper</h3>
         <img src="images/offroad/phantom-hyper.jpg" alt="Phantom Hyper">
         <p><strong>HP:</strong> 1100</p>
@@ -313,8 +475,7 @@
         <p><strong>0-60 Acceleration:</strong> 2.5 sec</p>
         <p><strong>Top Speed:</strong> 250 mph</p>
       </div>
-      <!-- Car2-Exotic -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="Exotic">
         <h3>Venom GTX</h3>
         <img src="images/offroad/venom-gtx.jpg" alt="Venom GTX">
         <p><strong>HP:</strong> 1250</p>
@@ -324,12 +485,10 @@
         <p><strong>Top Speed:</strong> 260 mph</p>
       </div>
     </div>
-
     <!-- XRS -->
     <div id="XRS-offroad" class="category-content" style="display:none;">
       <h2>XRS</h2>
-      <!-- Car1-XRS -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="XRS">
         <h3>Apex Predator</h3>
         <img src="images/offroad/xrs-apex-predator.jpg" alt="Apex Predator">
         <p><strong>HP:</strong> 1400</p>
@@ -338,8 +497,7 @@
         <p><strong>0-60 Acceleration:</strong> 2.1 sec</p>
         <p><strong>Top Speed:</strong> 275 mph</p>
       </div>
-      <!-- Car2-XRS -->
-      <div class="car-item">
+      <div class="car-item" data-category="offroad" data-subcategory="XRS">
         <h3>Dune Devil</h3>
         <img src="images/offroad/xrs-dune-devil.jpg" alt="Dune Devil">
         <p><strong>HP:</strong> 1100</p>
@@ -351,7 +509,6 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-links">
       <a href="https://discord.gg/speedverse" target="_blank">Join Discord</a>
@@ -368,19 +525,108 @@
   </footer>
 
   <script>
-    // SEARCH: highlight matches in the entire page
-    function handleKeyPress(e) {
-      if(e.key === 'Enter') {
-        let searchTerm = e.target.value.toLowerCase();
-        let bodyText = document.body.innerHTML;
-        // Remove old highlights
-        bodyText = bodyText.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
-        if(searchTerm.trim().length > 0) {
-          let regex = new RegExp(searchTerm, "gi");
-          bodyText = bodyText.replace(regex, match => `<span class="highlight">${match}</span>`);
-        }
-        document.body.innerHTML = bodyText;
+    /*
+      Old single-select logic (kept for reference, not removed):
+
+      
+      function showMain(which) {
+        document.getElementById("onroad").style.display = (which === 'onroad') ? 'block' : 'none';
+        document.getElementById("offroad").style.display = (which === 'offroad') ? 'block' : 'none';
       }
+      function setMainActive(element) {
+        if (currentMainNav) currentMainNav.classList.remove("active");
+        element.classList.add("active");
+        currentMainNav = element;
+      }
+      function showCategory(cat) {
+        document.querySelectorAll(".category-content").forEach(el => el.style.display = "none");
+        if(document.getElementById(`${cat}-onroad`)) {
+          document.getElementById(`${cat}-onroad`).style.display = "block";
+        }
+        if(document.getElementById(`${cat}-offroad`)) {
+          document.getElementById(`${cat}-offroad`).style.display = "block";
+        }
+      }
+      function setCategoryActive(element) {
+        if (currentCategoryNav) currentCategoryNav.classList.remove("active");
+        element.classList.add("active");
+        currentCategoryNav = element;
+      }
+    */
+
+    let activeMainCategories = new Set();
+    let activeSubCategories = new Set(); // If empty, we show all subcats by default for a selected main
+
+    function toggleMainCategory(which, element) {
+      if (activeMainCategories.has(which)) {
+        activeMainCategories.delete(which);
+        element.classList.remove('active');
+      } else {
+        activeMainCategories.add(which);
+        element.classList.add('active');
+      }
+      renderGarage();
+    }
+
+    function toggleSubCategory(cat, element) {
+      if (activeSubCategories.has(cat)) {
+        activeSubCategories.delete(cat);
+        element.classList.remove('active');
+      } else {
+        activeSubCategories.add(cat);
+        element.classList.add('active');
+      }
+      renderGarage();
+    }
+
+    function renderGarage() {
+      let onroadEl = document.getElementById('onroad');
+      let offroadEl = document.getElementById('offroad');
+
+      // If no main categories are active, hide both
+      if (activeMainCategories.size === 0) {
+        onroadEl.style.display = 'none';
+        offroadEl.style.display = 'none';
+        return;
+      }
+
+      // Onroad
+      if (activeMainCategories.has('onroad')) {
+        onroadEl.style.display = 'block';
+        let subcatsOnroad = onroadEl.querySelectorAll('.category-content');
+        subcatsOnroad.forEach(s => {
+          let subcatName = s.id.replace('-onroad','');
+          // If no subcategories are active, show all. Otherwise only show if active
+          if (activeSubCategories.size === 0 || activeSubCategories.has(subcatName)) {
+            s.style.display = 'block';
+          } else {
+            s.style.display = 'none';
+          }
+        });
+      } else {
+        onroadEl.style.display = 'none';
+      }
+
+      // Offroad
+      if (activeMainCategories.has('offroad')) {
+        offroadEl.style.display = 'block';
+        let subcatsOffroad = offroadEl.querySelectorAll('.category-content');
+        subcatsOffroad.forEach(s => {
+          let subcatName = s.id.replace('-offroad','');
+          if (activeSubCategories.size === 0 || activeSubCategories.has(subcatName)) {
+            s.style.display = 'block';
+          } else {
+            s.style.display = 'none';
+          }
+        });
+      } else {
+        offroadEl.style.display = 'none';
+      }
+    }
+
+    function toggleSitemap() {
+      const sm = document.getElementById('footer-sitemap');
+      sm.style.display = (sm.style.display === 'block') ? 'none' : 'block';
     }
 
     function toggleSearch() {
@@ -389,49 +635,160 @@
       document.getElementById("searchBar").focus();
     }
 
-    let currentMainNav = null;
-    let currentCategoryNav = null;
-
-    // Show/hide entire Onroad vs Offroad
-    function showMain(which) {
-      document.getElementById("onroad").style.display = (which === 'onroad') ? 'block' : 'none';
-      document.getElementById("offroad").style.display = (which === 'offroad') ? 'block' : 'none';
-    }
-
-    function setMainActive(element) {
-      if (currentMainNav) {
-        currentMainNav.classList.remove("active");
-      }
-      element.classList.add("active");
-      currentMainNav = element;
-    }
-
-    // Show/hide the categories within onroad/offroad
-    function showCategory(cat) {
-      // Hide all .category-content in whichever is visible
-      document.querySelectorAll(".category-content").forEach(el => el.style.display = "none");
-      // Show the correct one for onroad
-      if(document.getElementById(`${cat}-onroad`)) {
-        document.getElementById(`${cat}-onroad`).style.display = "block";
-      }
-      // Show the correct one for offroad
-      if(document.getElementById(`${cat}-offroad`)) {
-        document.getElementById(`${cat}-offroad`).style.display = "block";
+    // Highlight all matches + open relevant categories
+    function handleKeyPress(e) {
+      if(e.key === 'Enter') {
+        let searchTerm = e.target.value.toLowerCase();
+        let bodyText = document.body.innerHTML;
+        bodyText = bodyText.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
+        if(searchTerm.trim().length > 0) {
+          let regex = new RegExp(searchTerm, "gi");
+          bodyText = bodyText.replace(regex, match => `<span class="highlight">${match}</span>`);
+        }
+        document.body.innerHTML = bodyText;
+        // Re-bind events after rewriting innerHTML
+        rebindAllScripts();
+        openCategoriesForHighlights();
+        let firstMatch = document.querySelector('.highlight');
+        if(firstMatch) {
+          firstMatch.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
       }
     }
 
-    function setCategoryActive(element) {
-      if (currentCategoryNav) {
-        currentCategoryNav.classList.remove("active");
+    // Dropdown suggestions
+    function showSuggestions(query) {
+      const dropdown = document.getElementById("searchDropdown");
+      if(!query.trim()) {
+        dropdown.style.display = "none";
+        dropdown.innerHTML = "";
+        return;
       }
-      element.classList.add("active");
-      currentCategoryNav = element;
+      let items = document.querySelectorAll(".car-item");
+      let results = [];
+      query = query.toLowerCase();
+      items.forEach(item => {
+        let text = item.textContent.toLowerCase();
+        if(text.includes(query)) {
+          let name = item.querySelector("h3") ? item.querySelector("h3").innerText : item.textContent;
+          results.push({ name, element: item });
+        }
+      });
+      if(results.length === 0) {
+        dropdown.style.display = "none";
+        dropdown.innerHTML = "";
+        return;
+      }
+      dropdown.innerHTML = "";
+      results.forEach(r => {
+        let div = document.createElement("div");
+        div.textContent = r.name;
+        div.onclick = () => {
+          highlightAndScroll(r.element, query);
+          dropdown.style.display = "none";
+        };
+        dropdown.appendChild(div);
+      });
+      dropdown.style.display = "block";
     }
 
-    function toggleSitemap() {
-      const sm = document.getElementById('footer-sitemap');
-      sm.style.display = (sm.style.display === 'block') ? 'none' : 'block';
+    function highlightAndScroll(carItem, query) {
+      let newHTML = document.body.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
+      let regex = new RegExp(query, "gi");
+      newHTML = newHTML.replace(regex, match => `<span class="highlight">${match}</span>`);
+      document.body.innerHTML = newHTML;
+      rebindAllScripts();
+      let items = document.querySelectorAll(".car-item");
+      let found = null;
+      items.forEach(i => {
+        let h3 = i.querySelector("h3");
+        if(h3 && carItem.querySelector("h3") && h3.innerText === carItem.querySelector("h3").innerText) {
+          found = i;
+        }
+      });
+      if(found) {
+        openCategoryForItem(found);
+        found.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+
+    function openCategoriesForHighlights() {
+      let highlighted = document.querySelectorAll(".highlight");
+      highlighted.forEach(h => {
+        let item = h.closest(".car-item");
+        if(item) {
+          openCategoryForItem(item);
+        }
+      });
+    }
+
+    // Force main/sub cat to be active for a matched item
+    function openCategoryForItem(item) {
+      let cat = item.getAttribute("data-category");
+      let subcat = item.getAttribute("data-subcategory");
+      if(!cat || !subcat) return;
+      activeMainCategories.add(cat);
+      activeSubCategories.add(subcat);
+
+      // Mark main link active
+      document.querySelectorAll('.main-nav a').forEach(a => {
+        if(a.textContent.toLowerCase() === cat) {
+          a.classList.add('active');
+        }
+      });
+      // Mark sub link active
+      document.querySelectorAll('.secondary-nav a').forEach(a => {
+        if(a.textContent === subcat) {
+          a.classList.add('active');
+        }
+      });
+      renderGarage();
+    }
+
+    // Because rewriting innerHTML loses event bindings, rebind them
+    function rebindAllScripts() {
+      // Rebind search input
+      const sb = document.getElementById('searchBar');
+      if(sb) {
+        sb.onkeypress = handleKeyPress;
+        sb.oninput = (e) => showSuggestions(e.target.value);
+      }
+      // Rebind dropdown
+      const dd = document.getElementById('searchDropdown');
+      if(dd) {
+        dd.style.display = 'none';
+        dd.innerHTML = '';
+      }
+      // Rebind toggleSearch button
+      let sbtn = document.querySelector('.search-btn');
+      if(sbtn) {
+        sbtn.onclick = toggleSearch;
+      }
+      // Rebind siteMap
+      let smBtn = document.querySelector('button[onclick="toggleSitemap()"]');
+      if(smBtn) {
+        smBtn.onclick = toggleSitemap;
+      }
+      // Rebind main nav
+      let mainNavAs = document.querySelectorAll('.main-nav a');
+      mainNavAs.forEach(a => {
+        let text = a.textContent.toLowerCase();
+        a.onclick = (e) => {
+          e.preventDefault();
+          toggleMainCategory(text, a);
+        };
+      });
+      // Rebind sub nav
+      let subNavAs = document.querySelectorAll('.secondary-nav a');
+      subNavAs.forEach(a => {
+        let txt = a.textContent;
+        a.onclick = (e) => {
+          e.preventDefault();
+          toggleSubCategory(txt, a);
+        };
+      });
     }
   </script>
 </body>
 </html>
+

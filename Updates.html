@@ -8,7 +8,179 @@
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    /* -- Inlined CSS from style.css -- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #0a0a0a;
+      color: white;
+      font-family: 'Russo One', sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .highlight {
+      background-color: yellow;
+      color: black;
+    }
+    /* Header */
+    header {
+      background-color: black;
+      padding: 40px 20px;
+      font-size: 2rem;
+      text-transform: uppercase;
+      border-bottom: 3px solid red;
+      position: relative;
+    }
+    .logo { size: 200%; }
+    /* Global Navbar */
+    .global-nav {
+      background-color: black;
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 1rem;
+      text-transform: uppercase;
+    }
+    .global-nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 10px 15px;
+      transition: all 0.3s;
+    }
+    .global-nav a:hover,
+    .global-nav a.active {
+      color: red;
+    }
+    /* Search Bar */
+    .search-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto;
+    }
+    .search-input {
+      width: 0;
+      padding: 10px;
+      font-size: 1.2rem;
+      border: 2px solid white;
+      background: #222;
+      color: white;
+      border-radius: 25px;
+      transition: width 0.4s ease-in-out, padding 0.4s;
+      opacity: 0;
+    }
+    .search-container.expanded .search-input {
+      width: 300px;
+      padding: 10px 15px;
+      opacity: 1;
+    }
+    .search-btn {
+      background: transparent;
+      color: red;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 1.8rem;
+      margin-left: 5px;
+    }
+    .search-btn:hover {
+      color: white;
+    }
+    /* Navbars */
+    .main-nav,
+    .secondary-nav {
+      background-color: #111;
+      padding: 10px;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .main-nav a,
+    .secondary-nav a {
+      color: grey;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 5px 10px;
+      transition: color 0.3s, background 0.3s;
+    }
+    .main-nav a.active,
+    .secondary-nav a.active {
+      color: white;
+      background: red;
+      border-radius: 5px;
+    }
+    /* Category Bubbles */
+    .category-bubble {
+      background: #222;
+      padding: 20px;
+      margin: 30px auto;
+      width: 80%;
+      border: 2px solid white;
+      text-transform: uppercase;
+      font-size: 1.2rem;
+    }
+    /* Car Items */
+    .car-item {
+      background: #151515;
+      padding: 10px;
+      border: 2px solid white;
+      box-shadow: 0px 0px 10px grey;
+      margin-top: 15px;
+    }
+    .car-item img {
+      width: 100%;
+      max-width: 500px;
+      height: auto;
+    }
+    /* Updates Page */
+    .updates-section {
+      background-color: #222;
+      padding: 20px;
+      margin: 20px auto;
+      width: 80%;
+      border: 2px solid white;
+      text-transform: uppercase;
+      font-size: 1.2rem;
+    }
+    .github-updates {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #151515;
+      border: 2px solid red;
+    }
+    /* Footer */
+    footer {
+      background-color: black;
+      padding: 15px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    footer a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      transition: color 0.3s;
+    }
+    footer a:hover {
+      color: red;
+    }
+    .footer-links {
+      margin-bottom: 10px;
+    }
+    .footer-sitemap {
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
   <header>
