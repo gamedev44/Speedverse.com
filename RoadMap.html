@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Roadmap App</title>
+  <!-- Google Material Icons CDN -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+    :root {
+      --bg-start: #4e5460;
+      --bg-end:   #2e3038;
+      --card-bg:  #3a3f51;
+      --panel-bg: #f4f4f7;
+      --modal-bg: #ffffffee;
+      --card-radius: 20px;
+      --highlight: #f9c80e;
+      --text-dark: #1e1e2f;
+      --plus-bg:  #4caf50;
+      --btn-bg:   #5768f2;
+      --danger:   #e74c3c;
+    }
+    * { box-sizing:border-box; margin:0; padding:0 }
+    body {
+      display:flex; flex-direction:column; min-height:100vh;
+      font-family:'Montserrat',sans-serif;
+      background:linear-gradient(135deg,var(--bg-start),var(--bg-end));
+      color:white;
+      position:relative;
+    }
+    header {
+      position:relative;
+      text-align:center; padding:20px 0;
+      font-size:44px; letter-spacing:2px;
+      color:var(--highlight);
+      text-shadow:1px 1px var(--text-dark);
+    }
+    #clearAll, #infoBtn {
+      position:absolute; top:50%; transform:translateY(-50%);
+      cursor:pointer; font-size:28px; color:#ccc;
+    }
+    #clearAll { right:20px }
+    #infoBtn { left:20px }
+    #board {
+      display:grid; grid-auto-flow:column; gap:20px;
+      padding:0 20px; overflow-x:auto; flex:1;
+    }
+    .column {
+      background:var(--card-bg); border-radius:var(--card-radius);
+      width:240px; min-width:240px; padding:18px;
+      display:flex; flex-direction:column; position:relative;
+      box-shadow:0 4px 12px rgba(0,0,0,0.3);
+      cursor:pointer;
+    }
+    .column-header {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:12px;
+    }
+    .column-header .title {
+      flex:1; text-align:center; font-size:18px; font-weight:600;
+    }
+    .column-header .material-icons {
+      font-size:24px; color:#ccc; margin-right:8px;
+    }
+    .column-header button {
+      background:none; border:none; color:#ccc; cursor:pointer;
+      font-size:16px;
+    }
+    .subcard {
+      background:#fff; color:#333; padding:10px;
+      border-radius:8px; margin-top:10px; position:relative;
+      box-shadow:0 2px 6px rgba(0,0,0,0.2);
+      display:flex; flex-direction:column; align-items:center;
+      justify-content:center;
+      height:100px;
+    }
+    .subcard img, .subcard .material-icons {
+      max-width:60px; max-height:60px; margin-bottom:8px;
+      color:var(--text-dark);
+    }
+    .subcard .actions {
+      position:absolute; top:4px; right:4px; display:flex; gap:4px;
+    }
+    .subcard .actions button {
+      background:none; border:none; font-size:14px; cursor:pointer;
+      color:#888;
+    }
+    .inline-add {
+      background:var(--plus-bg); border:none;
+      border-radius:50%; width:34px; height:34px;
+      font-size:22px; line-height:34px;
+      color:#fff; cursor:pointer;
+      box-shadow:0 2px 6px rgba(0,0,0,0.3);
+    }
+    #addMain {
+      background:var(--plus-bg); color:#fff;
+      font-size:50px; width:120px; height:120px;
+      border-radius:var(--card-radius);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.3);
+      transition:background .2s;
+    }
+    #addMain:hover { background:#43a047; }
+    #details, #startModal, #infoModal {
+      position:fixed; top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,0.6); display:none;
+      align-items:center; justify-content:center; z-index:10;
+    }
+    #panel, #startPanel, #infoPanel {
+      background:var(--panel-bg); color:var(--text-dark);
+      border-radius:var(--card-radius); padding:24px;
+      width:90%; max-width:500px; max-height:90vh;
+      display:flex; flex-direction:column; gap:14px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.4);
+      position:relative;
+    }
+    #panel input, #panel textarea,
+    #startPanel textarea {
+      width:100%; padding:12px; border:2px solid #ccc;
+      border-radius:6px; font-size:15px; font-family:inherit;
+      background:#fff; color:var(--text-dark);
+    }
+    #preview {
+      background:#fff; padding:12px; border:2px solid #ccc;
+      border-radius:6px; color:var(--text-dark); overflow-y:auto;
+      flex:1; font-size:14px; line-height:1.4;
+    }
+    #actions, #startActions, #infoActions { display:flex; gap:10px; }
+    button { outline:none }
+    #actions button, #startActions button, #infoActions button {
+      flex:1; padding:12px; border:none; border-radius:6px;
+      font-size:15px; cursor:pointer; font-weight:600;
+    }
+    #confirmBtn, #editBtn { background:var(--btn-bg); color:#fff; }
+    #dangerBtn { background:var(--danger); color:#fff; }
+    #closeBtn { background:#888; color:#fff; }
+    #startMsg, #infoMsg { flex:1; overflow:auto; font-size:14px; }
+    footer {
+      text-align:center; padding:12px; color:#bbb; margin-top:auto;
+      font-size:14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    --- ROAD - MAP ---
+    <span id="infoBtn" class="material-icons">info_outline</span>
+    <span id="clearAll" class="material-icons">delete_sweep</span>
+  </header>
+  <div id="board"></div>
+  <div id="addMain">+</div>
+  <footer>Roadmap 2025: PGD</footer>
+
+  <!-- Detail Panel -->
+  <div id="details">
+    <div id="panel">
+      <input id="title" placeholder="TITLE" />
+      <textarea id="summary" rows="6" placeholder="Write Markdown…"></textarea>
+      <div id="preview"></div>
+      <div id="actions">
+        <button id="confirmBtn">Confirm</button>
+        <button id="editBtn">Save Edits</button>
+        <button id="dangerBtn">Delete</button>
+        <button id="closeBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Start Modal -->
+  <div id="startModal">
+    <div id="startPanel">
+      <h2>Welcome to Roadmap App</h2>
+      <textarea rows="6" readonly id="startMsg">
+Author: Risk
+
+Basic Features:
+• Create / edit / delete main cards & subcards  
+• Full Markdown support: images, links, Shields.io badges, __underline__, checkboxes  
+• Paste images directly from clipboard  
+• Persist data in localStorage & cookie  
+• Clear all data via delete‑sweep button  
+      </textarea>
+      <label><input type="checkbox" id="dontShow"> Don't show again</label>
+      <div id="startActions">
+        <button id="startOk">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Modal -->
+  <div id="infoModal">
+    <div id="infoPanel">
+      <h2>How to Use</h2>
+      <div id="infoMsg">
+• Click + to add main card  
+• In a card, click + to add subcard  
+• Click ✎ to edit title/content  
+• Click 🗑 to delete (you’ll be asked to confirm)  
+• Write Markdown in content:  
+  - `__underline__`  
+  - `![alt](url)` or paste image  
+  - `[text](link)` or Shields.io:  
+    `![badge](https://img.shields.io/badge/...)`  
+      </div>
+      <div id="infoActions">
+        <button id="infoClose">Close</button>
+      </div>
+    </div>
+  </div>
+
+ <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+const board = document.getElementById('board'),
+  addMain = document.getElementById('addMain'),
+  clearAll = document.getElementById('clearAll'),
+  infoBtn = document.getElementById('infoBtn'),
+  details = document.getElementById('details'),
+  titleEl = document.getElementById('title'),
+  summaryEl = document.getElementById('summary'),
+  preview = document.getElementById('preview'),
+  confirmBtn = document.getElementById('confirmBtn'),
+  editBtn = document.getElementById('editBtn'),
+  deleteBtn = document.getElementById('dangerBtn'),
+  closeBtn = document.getElementById('closeBtn'),
+  startModal = document.getElementById('startModal'),
+  dontShow = document.getElementById('dontShow'),
+  startOk = document.getElementById('startOk'),
+  infoModal = document.getElementById('infoModal'),
+  infoClose = document.getElementById('infoClose');
+
+let columns = JSON.parse(localStorage.getItem('columns') || 'null') || [
+  {id:1, title:'To-Do', summary:'', subcards:[], icon:'check_circle'},
+  {id:2, title:'In Progress', summary:'', subcards:[], icon:'autorenew'},
+  {id:3, title:"Idea's", summary:'', subcards:[], icon:'lightbulb'}
+];
+
+let mode=null, currCol=null, currSub=null;
+
+function showStart() {
+  if(!localStorage.getItem('hideIntro')) startModal.style.display='flex';
+}
+
+startOk.onclick=()=>{
+  if(dontShow.checked) localStorage.setItem('hideIntro','1');
+  startModal.style.display='none';
+};
+infoBtn.onclick=()=>infoModal.style.display='flex';
+infoClose.onclick=()=>infoModal.style.display='none';
+
+function clearStorage(){
+  if(confirm("WARNING: This will delete ALL data. Proceed?")){
+    localStorage.clear();
+    location.reload();
+  }
+}
+
+function save(){
+  localStorage.setItem('columns', JSON.stringify(columns));
+  render();
+}
+
+function render(){
+  board.innerHTML='';
+  columns.forEach(col=>{
+    const c=document.createElement('div');c.className='column';
+    c.innerHTML=`
+      <div class='column-header'>
+        <span class="material-icons">${col.icon}</span>
+        <span class='title'>${col.title}</span>
+        <button class='edit'>✎</button>
+        <button class='delete'>🗑</button>
+      </div>`;
+    c.querySelector('.edit').onclick=e=>{e.stopPropagation();openPanel('editMain',col)};
+    c.querySelector('.delete').onclick=e=>{
+      e.stopPropagation();
+      if(confirm("Delete column?")){columns=columns.filter(x=>x.id!==col.id);save();}
+    };
+
+    col.subcards.forEach(sc=>{
+      const s=document.createElement('div');s.className='subcard';
+      s.innerHTML=sc.icon?`<img src='${sc.icon}'><div>${sc.title}</div>`:`<span class='material-icons'>note</span><div>${sc.title}</div>`;
+      s.onclick=e=>{e.stopPropagation();openPanel('view',col,sc)};
+      const act=document.createElement('div');act.className='actions';
+      act.innerHTML='<button>✎</button><button>🗑</button>';
+      act.children[0].onclick=e=>{e.stopPropagation();openPanel('editSub',col,sc)};
+      act.children[1].onclick=e=>{
+        e.stopPropagation();
+        if(confirm("Delete subcard?")){col.subcards=col.subcards.filter(x=>x.id!==sc.id);save();}
+      };
+      s.append(act);c.append(s);
+    });
+
+    const btn=document.createElement('button');btn.className='inline-add';btn.textContent='+';
+    btn.onclick=e=>{e.stopPropagation();openPanel('sub',col)};
+    c.append(btn);board.append(c);
+  });
+  board.scrollWidth<=board.clientWidth?board.append(addMain):board.after(addMain);
+}
+
+function openPanel(m,col,sub=null){
+  mode=m;currCol=col;currSub=sub;
+  confirmBtn.style.display=editBtn.style.display=deleteBtn.style.display='none';
+  if(m==='main'||m==='sub'){
+    confirmBtn.style.display='block';titleEl.value='';summaryEl.value='';
+    titleEl.disabled=summaryEl.disabled=false;
+  }else if(m==='view'){
+    titleEl.value=sub.title;summaryEl.value=sub.summary;
+    preview.innerHTML=marked.parse(sub.summary.replace(/__(.*?)__/g,'<u>$1</u>'));
+    titleEl.disabled=summaryEl.disabled=true;
+    titleEl.style.display=summaryEl.style.display='none';
+    preview.style.display='block';
+  }else if(m.includes('edit')){
+    editBtn.style.display='block';
+    titleEl.value=sub?sub.title:col.title;summaryEl.value=sub?sub.summary:col.summary;
+    titleEl.disabled=summaryEl.disabled=false;
+  }
+  details.style.display='flex';
+}
+
+function closePanel(){
+  details.style.display='none';
+  titleEl.style.display=summaryEl.style.display='block';
+  preview.style.display='block';
+}
+
+confirmBtn.onclick=()=>{
+  const iconUrl=prompt("Image URL for icon? (optional)")||'';
+  const card={id:Date.now(),title:titleEl.value,summary:summaryEl.value,subcards:[],icon:iconUrl};
+  mode==='main'?columns.push(card):currCol.subcards.push(card);
+  save();closePanel();
+};
+
+editBtn.onclick=()=>{
+  if(mode==='editMain'){currCol.title=titleEl.value;currCol.summary=summaryEl.value;}
+  if(mode==='editSub'){currSub.title=titleEl.value;currSub.summary=summaryEl.value;}
+  save();closePanel();
+};
+
+closeBtn.onclick=closePanel;
+clearAll.onclick=clearStorage;
+
+summaryEl.oninput=()=>preview.innerHTML=marked.parse(summaryEl.value.replace(/__(.*?)__/g,'<u>$1</u>'));
+
+summaryEl.onpaste=e=>{
+  for(const item of e.clipboardData.items){
+    if(item.type.startsWith('image/')){
+      e.preventDefault();
+      const reader=new FileReader();
+      reader.onload=()=>{
+        const pos=summaryEl.selectionStart;
+        summaryEl.value=summaryEl.value.slice(0,pos)+`\n\n![](${reader.result})\n\n`+summaryEl.value.slice(pos);
+        preview.innerHTML=marked.parse(summaryEl.value.replace(/__(.*?)__/g,'<u>$1</u>'));
+      };
+      reader.readAsDataURL(item.getAsFile());
+    }
+  }
+};
+
+showStart();render();
+</script>
+
+  
+</body>
+</html>
