@@ -2,364 +2,804 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Roadmap App</title>
-  <!-- Google Material Icons CDN -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  
+  <!-- DISCORD / SOCIAL META TAGS -->
+  <title>Roadmap</title>
+  <meta name="description" content="A professional, local-storage based roadmap and Kanban board planner." />
+  <meta name="theme-color" content="#1c2541">
+  
+  <!-- Open Graph / Facebook / Discord -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://gamedev44.github.io/Speedverse.com//RoadMap.html" />
+  <meta property="og:title" content="Roadmap" />
+  <meta property="og:description" content="Organize your tasks with this dynamic, offline-capable roadmap tool featuring Markdown support and drag-and-drop aesthetics." />
+  <meta property="og:image" content="https://placehold.co/1200x630/1c2541/64ffda.png?text=Roadmap+2025" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://gamedev44.github.io/Speedverse.com//RoadMap.html" />
+  <meta property="twitter:title" content="Roadmap" />
+  <meta property="twitter:description" content="Organize your tasks with this dynamic, offline-capable roadmap tool." />
+  <meta property="twitter:image" content="https://placehold.co/1200x630/1c2541/64ffda.png?text=Roadmap+2025" />
+
+  <!-- Google Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
+    
     :root {
-      --bg-start: #4e5460;
-      --bg-end:   #2e3038;
-      --card-bg:  #3a3f51;
-      --panel-bg: #f4f4f7;
-      --modal-bg: #ffffffee;
-      --card-radius: 20px;
-      --highlight: #f9c80e;
-      --text-dark: #1e1e2f;
-      --plus-bg:  #4caf50;
-      --btn-bg:   #5768f2;
-      --danger:   #e74c3c;
+      --bg-start: #1c2541; /* Dark Blue */
+      --bg-end:   #0b132b; /* Very Dark Blue */
+      --card-bg:  #2f3d5e; /* Medium Dark Blue */
+      --panel-bg: #e6eef7; /* Light Off-White/Blue */
+      --modal-backdrop: rgba(0, 0, 0, 0.85);
+      --card-radius: 12px;
+      --highlight: #64ffda; /* Teal Accent */
+      --text-dark: #121212;
+      --text-light: #ccd6f6; /* Off-White Text */
+      --highlight-hover: #45b399;
+      --danger:   #ff4e50;
+      --header-height: 70px;
+      --footer-height: 40px;
     }
-    * { box-sizing:border-box; margin:0; padding:0 }
+
+    /* Global Reset & Typography */
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    
     body {
-      display:flex; flex-direction:column; min-height:100vh;
-      font-family:'Montserrat',sans-serif;
-      background:linear-gradient(135deg,var(--bg-start),var(--bg-end));
-      color:white;
-      position:relative;
+      display: flex; flex-direction: column; height: 100vh; height: 100dvh; /* Dynamic viewport height */
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+      color: var(--text-light);
+      overflow: hidden; /* Prevent body scroll, handle inside containers */
     }
+
+    /* Scrollbar Styling - ENFORCED CUSTOM THEME */
+    /* Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(100, 255, 218, 0.3) rgba(0,0,0,0.1);
+    }
+    
+    /* WebKit (Chrome/Safari/Edge) */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+    ::-webkit-scrollbar-thumb { background: rgba(100, 255, 218, 0.3); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(100, 255, 218, 0.6); }
+    ::-webkit-scrollbar-corner { background: transparent; }
+
+    /* Header */
     header {
-      position:relative;
-      text-align:center; padding:20px 0;
-      font-size:44px; letter-spacing:2px;
-      color:var(--highlight);
-      text-shadow:1px 1px var(--text-dark);
+      height: var(--header-height);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      background: rgba(11, 19, 43, 0.5);
+      backdrop-filter: blur(5px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      flex-shrink: 0;
+      z-index: 10;
     }
-    #clearAll, #infoBtn {
-      position:absolute; top:50%; transform:translateY(-50%);
-      cursor:pointer; font-size:28px; color:#ccc;
+    
+    .logo-text {
+      font-size: 1.5rem; letter-spacing: 1px; font-weight: 800;
+      text-shadow: 0 0 15px rgba(100, 255, 218, 0.2);
     }
-    #clearAll { right:20px }
-    #infoBtn { left:20px }
+    
+    .header-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      cursor: pointer; color: var(--text-light); opacity: 0.7;
+      transition: opacity 0.2s, color 0.2s;
+      padding: 10px; /* Larger touch target */
+    }
+    .header-btn:hover { opacity: 1; color: var(--highlight); }
+    #infoBtn { left: 16px; }
+    #clearAll { right: 16px; }
+
+    /* Board Layout - Horizontal Scroll (Desktop Default) */
     #board {
-      display:grid; grid-auto-flow:column; gap:20px;
-      padding:0 20px; overflow-x:auto; flex:1;
+      flex: 1;
+      display: flex;
+      gap: 20px;
+      padding: 24px;
+      padding-right: 0; /* CRITICAL FIX: We use ::after for right padding to prevent cutoff */
+      overflow-x: auto;
+      overflow-y: hidden; /* Hide vertical scroll on board container */
+      align-items: flex-start;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
     }
+    
+    /* Spacer to fix cut-off end - Forces scrollable area to extend past last item */
+    #board::after {
+      content: '';
+      min-width: 24px; /* Matches left padding */
+      height: 1px;
+      display: block;
+    }
+
+    /* Column Styles */
     .column {
-      background:var(--card-bg); border-radius:var(--card-radius);
-      width:240px; min-width:240px; padding:18px;
-      display:flex; flex-direction:column; position:relative;
-      box-shadow:0 4px 12px rgba(0,0,0,0.3);
-      cursor:pointer;
+      background: var(--card-bg); 
+      border-radius: var(--card-radius);
+      width: 300px; min-width: 300px;
+      max-height: 100%;
+      display: flex; flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: transform 0.2s, width 0.2s;
     }
+
     .column-header {
-      display:flex; justify-content:space-between; align-items:center;
-      margin-bottom:12px;
+      padding: 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0; /* Don't shrink header */
     }
+    
     .column-header .title {
-      flex:1; text-align:center; font-size:18px; font-weight:600;
+      flex: 1; font-weight: 700; font-size: 1rem; margin: 0 10px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .column-header .material-icons {
-      font-size:24px; color:#ccc; margin-right:8px;
+
+    .column-header .material-icons, .column-header .custom-icon {
+      color: var(--highlight); font-size: 20px;
     }
-    .column-header button {
-      background:none; border:none; color:#ccc; cursor:pointer;
-      font-size:16px;
+
+    .col-actions button {
+      background: transparent; border: none; color: rgba(255,255,255,0.5);
+      cursor: pointer; padding: 4px; transition: color 0.2s;
     }
+    .col-actions button:hover { color: #fff; }
+
+    /* Subcard Container (Scrollable Area inside Column) */
+    .subcards-container {
+      padding: 12px;
+      overflow-y: auto;
+      flex: 1; /* Take remaining height */
+      min-height: 50px; /* Ensure drop area exists */
+    }
+
+    /* Subcard Styles */
     .subcard {
-      background:#fff; color:#333; padding:10px;
-      border-radius:8px; margin-top:10px; position:relative;
-      box-shadow:0 2px 6px rgba(0,0,0,0.2);
-      display:flex; flex-direction:column; align-items:center;
-      justify-content:center;
-      height:100px;
+      background: #f8f9fa; color: #1f2937;
+      padding: 14px; border-radius: 8px;
+      margin-bottom: 12px; position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+      border-left: 4px solid var(--highlight);
     }
-    .subcard img, .subcard .material-icons {
-      max-width:60px; max-height:60px; margin-bottom:8px;
-      color:var(--text-dark);
+    .subcard:active { transform: scale(0.98); }
+    .subcard:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
+
+    .subcard img {
+      width: 100%; height: auto; max-height: 120px; object-fit: cover;
+      border-radius: 6px; margin-bottom: 8px; display: block;
     }
-    .subcard .actions {
-      position:absolute; top:4px; right:4px; display:flex; gap:4px;
+    
+    .subcard-title { font-weight: 600; font-size: 0.95rem; line-height: 1.4; }
+    
+    .card-actions {
+      position: absolute; top: 6px; right: 6px;
+      opacity: 0; transition: opacity 0.2s;
     }
-    .subcard .actions button {
-      background:none; border:none; font-size:14px; cursor:pointer;
-      color:#888;
+    /* Show actions on hover (desktop) or always visible if needed logic added, kept clean for now */
+    .subcard:hover .card-actions { opacity: 1; }
+
+    .card-actions button {
+      background: rgba(255,255,255,0.9); border-radius: 4px;
+      border: 1px solid #ddd; color: #555; padding: 2px 6px;
+      font-size: 12px; cursor: pointer; margin-left: 2px;
     }
+    .card-actions button:hover { color: var(--danger); border-color: var(--danger); }
+
+    /* Add Buttons */
     .inline-add {
-      background:var(--plus-bg); border:none;
-      border-radius:50%; width:34px; height:34px;
-      font-size:22px; line-height:34px;
-      color:#fff; cursor:pointer;
-      box-shadow:0 2px 6px rgba(0,0,0,0.3);
+      margin: 0 12px 12px;
+      background: rgba(100, 255, 218, 0.1);
+      border: 1px dashed var(--highlight);
+      color: var(--highlight);
+      padding: 10px; border-radius: 8px;
+      text-align: center; cursor: pointer;
+      font-weight: 600; font-size: 0.9rem;
+      transition: all 0.2s;
+      flex-shrink: 0;
     }
+    .inline-add:hover { background: var(--highlight); color: var(--bg-start); }
+
+    /* Add Main Column Placeholder */
     #addMain {
-      background:var(--plus-bg); color:#fff;
-      font-size:50px; width:120px; height:120px;
-      border-radius:var(--card-radius);
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.3);
-      transition:background .2s;
+      min-width: 300px; width: 300px; height: 200px;
+      border: 2px dashed rgba(255,255,255,0.2);
+      border-radius: var(--card-radius);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.5); cursor: pointer;
+      transition: all 0.2s;
     }
-    #addMain:hover { background:#43a047; }
-    #details, #startModal, #infoModal {
-      position:fixed; top:0; left:0; right:0; bottom:0;
-      background:rgba(0,0,0,0.6); display:none;
-      align-items:center; justify-content:center; z-index:10;
+    #addMain:hover { border-color: var(--highlight); color: var(--highlight); background: rgba(100,255,218,0.05); }
+
+    /* Modals & Overlays */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--modal-backdrop); backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
     }
-    #panel, #startPanel, #infoPanel {
-      background:var(--panel-bg); color:var(--text-dark);
-      border-radius:var(--card-radius); padding:24px;
-      width:90%; max-width:500px; max-height:90vh;
-      display:flex; flex-direction:column; gap:14px;
-      box-shadow:0 8px 24px rgba(0,0,0,0.4);
-      position:relative;
+    
+    .modal-panel {
+      background: var(--panel-bg); color: var(--text-dark);
+      border-radius: 16px; padding: 24px;
+      width: 100%; max-width: 600px;
+      max-height: 85vh; max-height: 85dvh; /* Safety for mobile bars */
+      display: flex; flex-direction: column; gap: 16px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    #panel input, #panel textarea,
-    #startPanel textarea {
-      width:100%; padding:12px; border:2px solid #ccc;
-      border-radius:6px; font-size:15px; font-family:inherit;
-      background:#fff; color:var(--text-dark);
+    
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
-    #preview {
-      background:#fff; padding:12px; border:2px solid #ccc;
-      border-radius:6px; color:var(--text-dark); overflow-y:auto;
-      flex:1; font-size:14px; line-height:1.4;
+
+    .modal-body {
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 5px; /* Space for scrollbar */
     }
-    #actions, #startActions, #infoActions { display:flex; gap:10px; }
-    button { outline:none }
-    #actions button, #startActions button, #infoActions button {
-      flex:1; padding:12px; border:none; border-radius:6px;
-      font-size:15px; cursor:pointer; font-weight:600;
+
+    /* Form Elements */
+    input, textarea {
+      width: 100%; padding: 12px;
+      border: 2px solid #e2e8f0; border-radius: 8px;
+      font-size: 1rem; font-family: inherit;
+      background: #fff; color: #333; outline: none;
+      transition: border-color 0.2s;
     }
-    #confirmBtn, #editBtn { background:var(--btn-bg); color:#fff; }
-    #dangerBtn { background:var(--danger); color:#fff; }
-    #closeBtn { background:#888; color:#fff; }
-    #startMsg, #infoMsg { flex:1; overflow:auto; font-size:14px; }
+    input:focus, textarea:focus { border-color: #007bff; }
+    
+    .preview-box {
+      background: #fff; border: 1px solid #e2e8f0;
+      padding: 16px; border-radius: 8px;
+      min-height: 100px; font-size: 0.95rem; line-height: 1.6;
+    }
+    .preview-box img { max-width: 100%; border-radius: 6px; margin: 8px 0; }
+    .preview-box u { text-decoration: underline; text-decoration-color: var(--highlight); text-decoration-thickness: 2px; }
+
+    /* Modal Actions */
+    .action-row { display: flex; gap: 12px; margin-top: auto; padding-top: 10px; }
+    .btn {
+      flex: 1; padding: 14px; border: none; border-radius: 8px;
+      font-weight: 600; cursor: pointer; font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-primary { background: #007bff; color: white; }
+    .btn-primary:hover { background: #0069d9; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-secondary { background: #6c757d; color: white; }
+
+    /* Footer */
     footer {
-      text-align:center; padding:12px; color:#bbb; margin-top:auto;
-      font-size:14px;
+      height: var(--footer-height);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; color: rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+
+    /* Mobile / Responsive Vertical Stack */
+    @media (max-width: 800px) {
+      /* Switch board to vertical stack */
+      #board {
+        flex-direction: column;
+        align-items: center; /* Center cards */
+        overflow-x: hidden; /* No horizontal scroll */
+        overflow-y: auto;   /* Vertical scroll enabled */
+        padding: 20px;
+        gap: 24px;
+      }
+
+      /* Disable the right-side spacer used for horizontal layout */
+      #board::after { display: none; }
+
+      /* Make columns full width relative to container, but capped */
+      .column { 
+        width: 100%; 
+        max-width: 500px; /* readable max width */
+        min-width: 0; 
+        height: auto;
+        max-height: 600px; /* cap height to keep other cols reachable */
+        margin: 0; /* Gap handles spacing */
+        flex-shrink: 0;
+      }
+      
+      /* Ensure subcards scroll within the limited column height */
+      .subcards-container {
+        max-height: 400px; /* Inner scroll limit */
+      }
+
+      /* Adjust Add Button */
+      #addMain {
+        width: 100%;
+        max-width: 500px;
+        min-width: 0;
+        height: 150px;
+      }
+
+      .logo-text { font-size: 1.2rem; }
+      .modal-panel { padding: 16px; max-height: 90dvh; width: 95%; }
+      .action-row { flex-direction: column; }
+      .btn { padding: 12px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Header -->
   <header>
-    --- ROAD - MAP ---
-    <span id="infoBtn" class="material-icons">info_outline</span>
-    <span id="clearAll" class="material-icons">delete_sweep</span>
+    <div id="infoBtn" class="header-btn material-icons" title="Info">info</div>
+    <div class="logo-text">
+      <span class="text-white">PROJECT</span> <span class="text-[--highlight]">ROADMAP</span>
+    </div>
+    <div id="clearAll" class="header-btn material-icons" title="Clear Data">delete_sweep</div>
   </header>
-  <div id="board"></div>
-  <div id="addMain">+</div>
-  <footer>Roadmap 2025: PGD</footer>
 
-  <!-- Detail Panel -->
-  <div id="details">
-    <div id="panel">
-      <input id="title" placeholder="TITLE" />
-      <textarea id="summary" rows="6" placeholder="Write Markdown…"></textarea>
-      <div id="preview"></div>
-      <div id="actions">
-        <button id="confirmBtn">Confirm</button>
-        <button id="editBtn">Save Edits</button>
-        <button id="dangerBtn">Delete</button>
-        <button id="closeBtn">Close</button>
+  <!-- Board Area -->
+  <div id="board">
+    <!-- Columns render here -->
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    Roadmap 2025 • PGD Secure
+  </footer>
+
+  <!-- MAIN MODAL (Add/Edit/View) -->
+  <div id="details" class="modal-overlay">
+    <div class="modal-panel">
+      <h3 id="modalHeader" class="text-xl font-bold mb-2 text-gray-800">Edit Card</h3>
+      
+      <div class="modal-body space-y-4">
+        <!-- Icon Input (Columns only) -->
+        <div id="iconInputWrapper" style="display:none;">
+          <label class="text-xs font-bold text-gray-500 uppercase">Icon / Emoji</label>
+          <input id="iconInput" placeholder="e.g. rocket, 🚀, or material icon name" />
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-gray-500 uppercase">Title</label>
+          <input id="title" placeholder="Enter title..." />
+        </div>
+
+        <!-- Editor & Preview -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-xs font-bold text-gray-500 uppercase">Content (Markdown)</label>
+            <span class="text-xs text-blue-500 cursor-pointer" id="togglePreviewBtn">Toggle Preview</span>
+          </div>
+          
+          <textarea id="summary" rows="5" placeholder="Support: **bold**, __underline__, images (paste from clipboard)..."></textarea>
+          
+          <div id="preview" class="preview-box hidden mt-2"></div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="action-row" id="actions">
+        <button id="confirmBtn" class="btn btn-primary">Save Card</button>
+        <button id="editBtn" class="btn btn-primary hidden">Save Changes</button>
+        <button id="dangerBtn" class="btn btn-danger hidden">Delete</button>
+        <button id="closeBtn" class="btn btn-secondary">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- Start Modal -->
-  <div id="startModal">
-    <div id="startPanel">
-      <h2>Welcome to Roadmap App</h2>
-      <textarea rows="6" readonly id="startMsg">
-Author: Risk
-
-Basic Features:
-• Create / edit / delete main cards & subcards  
-• Full Markdown support: images, links, Shields.io badges, __underline__, checkboxes  
-• Paste images directly from clipboard  
-• Persist data in localStorage & cookie  
-• Clear all data via delete‑sweep button  
-      </textarea>
-      <label><input type="checkbox" id="dontShow"> Don't show again</label>
-      <div id="startActions">
-        <button id="startOk">OK</button>
+  <!-- START MODAL -->
+  <div id="startModal" class="modal-overlay">
+    <div class="modal-panel">
+      <h2 class="text-2xl font-bold text-[--bg-start]">Welcome to Roadmap</h2>
+      <div class="modal-body text-sm text-gray-700 leading-relaxed">
+        <p class="mb-2">A powerful, offline-first project planner.</p>
+        <ul class="list-disc pl-5 space-y-1 mb-4">
+          <li><strong>Drag-like feel:</strong> Smooth horizontal scrolling.</li>
+          <li><strong>Rich Media:</strong> Paste images directly from clipboard.</li>
+          <li><strong>Markdown:</strong> Use **bold**, __underline__, and more.</li>
+          <li><strong>Secure:</strong> Data stays in your browser.</li>
+        </ul>
+        <div class="bg-blue-50 p-3 rounded text-xs border border-blue-200">
+          <strong>Tip:</strong> On mobile, swipe left/right to navigate columns.
+        </div>
+      </div>
+      <label class="flex items-center gap-2 text-sm mt-4 text-gray-600">
+        <input type="checkbox" id="dontShow"> Don't show again
+      </label>
+      <div class="action-row">
+        <button id="startOk" class="btn btn-primary bg-[--highlight] text-[--bg-start] hover:bg-[#45b399] border-none">Get Started</button>
       </div>
     </div>
   </div>
 
-  <!-- Info Modal -->
-  <div id="infoModal">
-    <div id="infoPanel">
-      <h2>How to Use</h2>
-      <div id="infoMsg">
-• Click + to add main card  
-• In a card, click + to add subcard  
-• Click ✎ to edit title/content  
-• Click 🗑 to delete (you’ll be asked to confirm)  
-• Write Markdown in content:  
-  - `__underline__`  
-  - `![alt](url)` or paste image  
-  - `[text](link)` or Shields.io:  
-    `![badge](https://img.shields.io/badge/...)`  
+  <!-- INFO MODAL -->
+  <div id="infoModal" class="modal-overlay">
+    <div class="modal-panel">
+      <h2 class="text-xl font-bold">Help & Guide</h2>
+      <div class="modal-body text-sm text-gray-700 space-y-3">
+        <p><strong>Adding Columns:</strong> Scroll to the far right and click the big dashed box.</p>
+        <p><strong>Adding Cards:</strong> Click "+ Add Card" at the bottom of any column.</p>
+        <p><strong>Editing:</strong> Click the pencil icon or the card body.</p>
+        <p><strong>Deleting:</strong> Open a card/column and click the red "Delete" button.</p>
+        <hr>
+        <p><strong>Markdown Cheatsheet:</strong></p>
+        <code class="block bg-gray-100 p-2 rounded text-xs">
+          **Bold Text**<br>
+          __Underline__<br>
+          - List Item<br>
+          ![Alt](Image URL) or Paste Image
+        </code>
       </div>
-      <div id="infoActions">
-        <button id="infoClose">Close</button>
+      <div class="action-row">
+        <button id="infoClose" class="btn btn-secondary">Close</button>
       </div>
     </div>
   </div>
 
- <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script>
-const board = document.getElementById('board'),
-  addMain = document.getElementById('addMain'),
-  clearAll = document.getElementById('clearAll'),
-  infoBtn = document.getElementById('infoBtn'),
-  details = document.getElementById('details'),
-  titleEl = document.getElementById('title'),
-  summaryEl = document.getElementById('summary'),
-  preview = document.getElementById('preview'),
-  confirmBtn = document.getElementById('confirmBtn'),
-  editBtn = document.getElementById('editBtn'),
-  deleteBtn = document.getElementById('dangerBtn'),
-  closeBtn = document.getElementById('closeBtn'),
-  startModal = document.getElementById('startModal'),
-  dontShow = document.getElementById('dontShow'),
-  startOk = document.getElementById('startOk'),
-  infoModal = document.getElementById('infoModal'),
-  infoClose = document.getElementById('infoClose');
+  <!-- Add Main Column Placeholder (Hidden, used by JS) -->
+  <div id="addMainTemplate" style="display:none;">
+    <div id="addMain">
+      <span class="material-icons" style="font-size: 48px;">add_circle_outline</span>
+      <span style="margin-top: 10px; font-weight: 600;">Add New Column</span>
+    </div>
+  </div>
 
-let columns = JSON.parse(localStorage.getItem('columns') || 'null') || [
-  {id:1, title:'To-Do', summary:'', subcards:[], icon:'check_circle'},
-  {id:2, title:'In Progress', summary:'', subcards:[], icon:'autorenew'},
-  {id:3, title:"Idea's", summary:'', subcards:[], icon:'lightbulb'}
-];
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // --- APP LOGIC ---
 
-let mode=null, currCol=null, currSub=null;
+    // DOM Elements
+    const board = document.getElementById('board');
+    const addMainTemplate = document.getElementById('addMainTemplate').firstElementChild;
+    const details = document.getElementById('details');
+    const startModal = document.getElementById('startModal');
+    const infoModal = document.getElementById('infoModal');
+    
+    // Inputs
+    const titleEl = document.getElementById('title');
+    const summaryEl = document.getElementById('summary');
+    const iconInput = document.getElementById('iconInput');
+    const iconInputWrapper = document.getElementById('iconInputWrapper');
+    const preview = document.getElementById('preview');
+    const modalHeader = document.getElementById('modalHeader');
 
-function showStart() {
-  if(!localStorage.getItem('hideIntro')) startModal.style.display='flex';
-}
+    // Buttons
+    const confirmBtn = document.getElementById('confirmBtn');
+    const editBtn = document.getElementById('editBtn');
+    const deleteBtn = document.getElementById('dangerBtn');
 
-startOk.onclick=()=>{
-  if(dontShow.checked) localStorage.setItem('hideIntro','1');
-  startModal.style.display='none';
-};
-infoBtn.onclick=()=>infoModal.style.display='flex';
-infoClose.onclick=()=>infoModal.style.display='none';
+    // State
+    let columns = JSON.parse(localStorage.getItem('columns') || 'null') || [
+      { id: 1, title: 'Ideas 💡', summary: 'New concepts', subcards: [], icon: 'lightbulb' },
+      { id: 2, title: 'In Progress 🚀', summary: 'Building now', subcards: [], icon: 'rocket_launch' },
+      { id: 3, title: 'Done ✅', summary: 'Completed items', subcards: [], icon: 'check_circle' }
+    ];
+    let mode = null; // 'main', 'sub', 'editMain', 'editSub', 'view'
+    let currCol = null;
+    let currSub = null;
+    let isPreviewVisible = false;
 
-function clearStorage(){
-  if(confirm("WARNING: This will delete ALL data. Proceed?")){
-    localStorage.clear();
-    location.reload();
-  }
-}
+    // Material Icons list for detection
+    const materialIcons = ['lightbulb', 'check_circle', 'autorenew', 'settings', 'folder_open', 'note', 'rocket_launch', 'star', 'work', 'code'];
 
-function save(){
-  localStorage.setItem('columns', JSON.stringify(columns));
-  render();
-}
+    // --- SETUP MARKED ---
+    const customRenderer = {
+      paragraph(text) {
+        // __underline__ support
+        const underlined = text.replace(/__(.+?)__/g, '<u>$1</u>');
+        return `<p>${underlined}</p>`;
+      }
+    };
+    marked.use({ renderer: customRenderer });
 
-function render(){
-  board.innerHTML='';
-  columns.forEach(col=>{
-    const c=document.createElement('div');c.className='column';
-    c.innerHTML=`
-      <div class='column-header'>
-        <span class="material-icons">${col.icon}</span>
-        <span class='title'>${col.title}</span>
-        <button class='edit'>✎</button>
-        <button class='delete'>🗑</button>
-      </div>`;
-    c.querySelector('.edit').onclick=e=>{e.stopPropagation();openPanel('editMain',col)};
-    c.querySelector('.delete').onclick=e=>{
-      e.stopPropagation();
-      if(confirm("Delete column?")){columns=columns.filter(x=>x.id!==col.id);save();}
+    // --- CORE FUNCTIONS ---
+
+    function save() {
+      localStorage.setItem('columns', JSON.stringify(columns));
+      render();
+    }
+
+    function render() {
+      board.innerHTML = '';
+      
+      columns.forEach(col => {
+        // Create Column
+        const colDiv = document.createElement('div');
+        colDiv.className = 'column';
+
+        // Icon Logic
+        let iconHtml = '';
+        if (col.icon && materialIcons.includes(col.icon)) {
+          iconHtml = `<span class="material-icons">${col.icon}</span>`;
+        } else if (col.icon) {
+          iconHtml = `<span class="custom-icon">${col.icon}</span>`;
+        } else {
+          iconHtml = `<span class="material-icons">folder</span>`;
+        }
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'column-header';
+        header.innerHTML = `
+          <div class="flex items-center overflow-hidden flex-1">
+            ${iconHtml}
+            <span class="title" title="${col.title}">${col.title}</span>
+          </div>
+          <div class="col-actions flex">
+            <button class="edit-col material-icons text-sm">edit</button>
+            <button class="del-col material-icons text-sm">delete</button>
+          </div>
+        `;
+        
+        // Header Events
+        header.querySelector('.edit-col').onclick = () => openPanel('editMain', col);
+        header.querySelector('.del-col').onclick = () => {
+          if(confirm(`Delete column "${col.title}"?`)) {
+            columns = columns.filter(c => c.id !== col.id);
+            save();
+          }
+        };
+
+        // Subcards Container
+        const subContainer = document.createElement('div');
+        subContainer.className = 'subcards-container';
+
+        // Subcards
+        col.subcards.forEach(card => {
+          const cardDiv = document.createElement('div');
+          cardDiv.className = 'subcard';
+          
+          // Image Extract
+          const imgMatch = card.summary.match(/!\[.*?\]\((.*?)\)/);
+          let imgHtml = '';
+          if (imgMatch) {
+            imgHtml = `<img src="${imgMatch[1]}" loading="lazy" />`;
+          }
+
+          cardDiv.innerHTML = `
+            ${imgHtml}
+            <div class="subcard-title">${card.title}</div>
+            <div class="card-actions">
+              <button class="edit-card">Edit</button>
+            </div>
+          `;
+          
+          cardDiv.onclick = (e) => {
+            // Prevent triggering if clicked action button
+            if(e.target.tagName !== 'BUTTON') openPanel('view', col, card);
+          };
+
+          cardDiv.querySelector('.edit-card').onclick = (e) => {
+            e.stopPropagation();
+            openPanel('editSub', col, card);
+          };
+
+          subContainer.appendChild(cardDiv);
+        });
+
+        // Add Button
+        const addBtn = document.createElement('div');
+        addBtn.className = 'inline-add';
+        addBtn.textContent = '+ Add Card';
+        addBtn.onclick = () => openPanel('sub', col);
+
+        colDiv.appendChild(header);
+        colDiv.appendChild(subContainer);
+        colDiv.appendChild(addBtn);
+        board.appendChild(colDiv);
+      });
+
+      // Append "Add Column" giant button
+      const addColBtn = addMainTemplate.cloneNode(true);
+      addColBtn.onclick = () => openPanel('main', null);
+      board.appendChild(addColBtn);
+    }
+
+    // --- MODAL FUNCTIONS ---
+
+    function openPanel(m, col, sub = null) {
+      mode = m;
+      currCol = col;
+      currSub = sub;
+      
+      // Reset UI
+      titleEl.value = '';
+      summaryEl.value = '';
+      iconInput.value = '';
+      preview.innerHTML = '';
+      preview.classList.add('hidden');
+      summaryEl.classList.remove('hidden');
+      isPreviewVisible = false;
+      document.getElementById('togglePreviewBtn').textContent = 'Toggle Preview';
+      
+      // Defaults
+      iconInputWrapper.style.display = 'none';
+      confirmBtn.classList.add('hidden');
+      editBtn.classList.add('hidden');
+      deleteBtn.classList.add('hidden');
+      
+      details.style.display = 'flex'; // Show Overlay
+
+      // Configure based on Mode
+      if (mode === 'main') {
+        modalHeader.textContent = "New Column";
+        titleEl.placeholder = "Column Name (e.g. Q4 Goals)";
+        iconInputWrapper.style.display = 'block';
+        confirmBtn.classList.remove('hidden');
+        confirmBtn.textContent = "Create Column";
+      } 
+      else if (mode === 'sub') {
+        modalHeader.textContent = `New Card in "${col.title}"`;
+        titleEl.placeholder = "Card Title";
+        confirmBtn.classList.remove('hidden');
+        confirmBtn.textContent = "Create Card";
+      }
+      else if (mode === 'view') {
+        modalHeader.textContent = "View Card";
+        titleEl.value = sub.title;
+        summaryEl.value = sub.summary;
+        // Auto show preview in view mode
+        togglePreview(); 
+        editBtn.classList.remove('hidden');
+        editBtn.textContent = "Edit Card";
+        deleteBtn.classList.remove('hidden');
+      }
+      else if (mode === 'editSub') {
+        modalHeader.textContent = "Edit Card";
+        titleEl.value = sub.title;
+        summaryEl.value = sub.summary;
+        editBtn.classList.remove('hidden');
+        editBtn.textContent = "Save Changes";
+        deleteBtn.classList.remove('hidden');
+      }
+      else if (mode === 'editMain') {
+        modalHeader.textContent = "Edit Column";
+        titleEl.value = col.title;
+        summaryEl.value = col.summary || ''; // Columns usually don't have summaries but keeping structure
+        iconInputWrapper.style.display = 'block';
+        iconInput.value = col.icon || '';
+        editBtn.classList.remove('hidden');
+        editBtn.textContent = "Update Column";
+      }
+    }
+
+    function closePanel() {
+      details.style.display = 'none';
+    }
+
+    // --- EVENTS ---
+
+    document.getElementById('closeBtn').onclick = closePanel;
+    document.getElementById('infoClose').onclick = () => infoModal.style.display = 'none';
+    document.getElementById('infoBtn').onclick = () => infoModal.style.display = 'flex';
+    document.getElementById('clearAll').onclick = () => {
+      if(confirm('WARNING: Wipe all data? This cannot be undone.')) {
+        localStorage.clear();
+        location.reload();
+      }
     };
 
-    col.subcards.forEach(sc=>{
-      const s=document.createElement('div');s.className='subcard';
-      s.innerHTML=sc.icon?`<img src='${sc.icon}'><div>${sc.title}</div>`:`<span class='material-icons'>note</span><div>${sc.title}</div>`;
-      s.onclick=e=>{e.stopPropagation();openPanel('view',col,sc)};
-      const act=document.createElement('div');act.className='actions';
-      act.innerHTML='<button>✎</button><button>🗑</button>';
-      act.children[0].onclick=e=>{e.stopPropagation();openPanel('editSub',col,sc)};
-      act.children[1].onclick=e=>{
-        e.stopPropagation();
-        if(confirm("Delete subcard?")){col.subcards=col.subcards.filter(x=>x.id!==sc.id);save();}
-      };
-      s.append(act);c.append(s);
-    });
-
-    const btn=document.createElement('button');btn.className='inline-add';btn.textContent='+';
-    btn.onclick=e=>{e.stopPropagation();openPanel('sub',col)};
-    c.append(btn);board.append(c);
-  });
-  board.scrollWidth<=board.clientWidth?board.append(addMain):board.after(addMain);
-}
-
-function openPanel(m,col,sub=null){
-  mode=m;currCol=col;currSub=sub;
-  confirmBtn.style.display=editBtn.style.display=deleteBtn.style.display='none';
-  if(m==='main'||m==='sub'){
-    confirmBtn.style.display='block';titleEl.value='';summaryEl.value='';
-    titleEl.disabled=summaryEl.disabled=false;
-  }else if(m==='view'){
-    titleEl.value=sub.title;summaryEl.value=sub.summary;
-    preview.innerHTML=marked.parse(sub.summary.replace(/__(.*?)__/g,'<u>$1</u>'));
-    titleEl.disabled=summaryEl.disabled=true;
-    titleEl.style.display=summaryEl.style.display='none';
-    preview.style.display='block';
-  }else if(m.includes('edit')){
-    editBtn.style.display='block';
-    titleEl.value=sub?sub.title:col.title;summaryEl.value=sub?sub.summary:col.summary;
-    titleEl.disabled=summaryEl.disabled=false;
-  }
-  details.style.display='flex';
-}
-
-function closePanel(){
-  details.style.display='none';
-  titleEl.style.display=summaryEl.style.display='block';
-  preview.style.display='block';
-}
-
-confirmBtn.onclick=()=>{
-  const iconUrl=prompt("Image URL for icon? (optional)")||'';
-  const card={id:Date.now(),title:titleEl.value,summary:summaryEl.value,subcards:[],icon:iconUrl};
-  mode==='main'?columns.push(card):currCol.subcards.push(card);
-  save();closePanel();
-};
-
-editBtn.onclick=()=>{
-  if(mode==='editMain'){currCol.title=titleEl.value;currCol.summary=summaryEl.value;}
-  if(mode==='editSub'){currSub.title=titleEl.value;currSub.summary=summaryEl.value;}
-  save();closePanel();
-};
-
-closeBtn.onclick=closePanel;
-clearAll.onclick=clearStorage;
-
-summaryEl.oninput=()=>preview.innerHTML=marked.parse(summaryEl.value.replace(/__(.*?)__/g,'<u>$1</u>'));
-
-summaryEl.onpaste=e=>{
-  for(const item of e.clipboardData.items){
-    if(item.type.startsWith('image/')){
-      e.preventDefault();
-      const reader=new FileReader();
-      reader.onload=()=>{
-        const pos=summaryEl.selectionStart;
-        summaryEl.value=summaryEl.value.slice(0,pos)+`\n\n![](${reader.result})\n\n`+summaryEl.value.slice(pos);
-        preview.innerHTML=marked.parse(summaryEl.value.replace(/__(.*?)__/g,'<u>$1</u>'));
-      };
-      reader.readAsDataURL(item.getAsFile());
+    // Toggle Preview
+    document.getElementById('togglePreviewBtn').onclick = togglePreview;
+    
+    function togglePreview() {
+      isPreviewVisible = !isPreviewVisible;
+      const btn = document.getElementById('togglePreviewBtn');
+      
+      if(isPreviewVisible) {
+        // Show Preview
+        preview.innerHTML = marked.parse(summaryEl.value);
+        summaryEl.classList.add('hidden');
+        preview.classList.remove('hidden');
+        btn.textContent = 'Edit Markdown';
+      } else {
+        // Show Editor
+        summaryEl.classList.remove('hidden');
+        preview.classList.add('hidden');
+        btn.textContent = 'View Preview';
+      }
     }
-  }
-};
 
-showStart();render();
-</script>
+    // Create Logic
+    confirmBtn.onclick = () => {
+      if (!titleEl.value.trim()) return titleEl.focus();
+      
+      const newItem = {
+        id: Date.now(),
+        title: titleEl.value,
+        summary: summaryEl.value,
+        subcards: []
+      };
 
-  
+      if (mode === 'main') {
+        newItem.icon = iconInput.value.trim() || 'folder';
+        columns.push(newItem);
+      } else if (mode === 'sub') {
+        currCol.subcards.push(newItem);
+      }
+      
+      save();
+      closePanel();
+    };
+
+    // Edit/Update Logic
+    editBtn.onclick = () => {
+      if (mode === 'view') {
+        // Switch to edit mode
+        mode = 'editSub';
+        modalHeader.textContent = "Editing Card...";
+        editBtn.textContent = "Save Changes";
+        // Ensure editor is visible
+        if(isPreviewVisible) togglePreview();
+        return;
+      }
+
+      // Saving changes
+      if (mode === 'editMain') {
+        currCol.title = titleEl.value;
+        currCol.icon = iconInput.value.trim() || 'folder';
+      } else {
+        currSub.title = titleEl.value;
+        currSub.summary = summaryEl.value;
+      }
+      save();
+      closePanel();
+    };
+
+    // Delete Logic
+    deleteBtn.onclick = () => {
+      if(confirm('Are you sure you want to delete this item?')) {
+        if (mode === 'editSub' || mode === 'view') {
+          currCol.subcards = currCol.subcards.filter(c => c.id !== currSub.id);
+        }
+        save();
+        closePanel();
+      }
+    };
+
+    // Paste Image Logic
+    summaryEl.onpaste = (e) => {
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for (let item of items) {
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+          e.preventDefault();
+          const blob = item.getAsFile();
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            const mdImage = `\n![Pasted Image](${evt.target.result})\n`;
+            // Insert at cursor
+            const start = summaryEl.selectionStart;
+            summaryEl.value = summaryEl.value.substring(0, start) + mdImage + summaryEl.value.substring(summaryEl.selectionEnd);
+            // Notify user visually could be added here
+          };
+          reader.readAsDataURL(blob);
+        }
+      }
+    };
+
+    // Start Modal
+    if (!localStorage.getItem('hideIntro')) {
+      startModal.style.display = 'flex';
+    }
+    document.getElementById('startOk').onclick = () => {
+      if(document.getElementById('dontShow').checked) {
+        localStorage.setItem('hideIntro', 'true');
+      }
+      startModal.style.display = 'none';
+    };
+
+    // Initial Render
+    render();
+
+  </script>
 </body>
 </html>
