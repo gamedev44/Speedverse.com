@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   
   <!-- DISCORD / SOCIAL META TAGS -->
-  <title>Roadmap</title>
+  <title>Project Roadmap 2025</title>
   <meta name="description" content="A professional, local-storage based roadmap and Kanban board planner." />
   <meta name="theme-color" content="#1c2541">
   
   <!-- Open Graph / Facebook / Discord -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://gamedev44.github.io/Speedverse.com//RoadMap.html" />
-  <meta property="og:title" content="Roadmap" />
+  <meta property="og:url" content="https://roadmap.app/" />
+  <meta property="og:title" content="Project Roadmap 2025" />
   <meta property="og:description" content="Organize your tasks with this dynamic, offline-capable roadmap tool featuring Markdown support and drag-and-drop aesthetics." />
   <meta property="og:image" content="https://placehold.co/1200x630/1c2541/64ffda.png?text=Roadmap+2025" />
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://gamedev44.github.io/Speedverse.com//RoadMap.html" />
-  <meta property="twitter:title" content="Roadmap" />
+  <meta property="twitter:url" content="https://roadmap.app/" />
+  <meta property="twitter:title" content="Project Roadmap 2025" />
   <meta property="twitter:description" content="Organize your tasks with this dynamic, offline-capable roadmap tool." />
   <meta property="twitter:image" content="https://placehold.co/1200x630/1c2541/64ffda.png?text=Roadmap+2025" />
 
@@ -249,6 +249,9 @@
       overflow-y: auto;
       flex: 1;
       padding-right: 5px; /* Space for scrollbar */
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     /* Form Elements */
@@ -261,13 +264,59 @@
     }
     input:focus, textarea:focus { border-color: #007bff; }
     
+    /* Live Preview Styles - Discord Flavor */
     .preview-box {
-      background: #fff; border: 1px solid #e2e8f0;
-      padding: 16px; border-radius: 8px;
-      min-height: 100px; font-size: 0.95rem; line-height: 1.6;
+      background: #2f3136; /* Discord Dark */
+      color: #dcddde;
+      border: 1px solid #202225;
+      padding: 16px; 
+      border-radius: 8px;
+      min-height: 80px; 
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 0.95rem; 
+      line-height: 1.5;
+      margin-top: 8px;
+      word-wrap: break-word;
     }
-    .preview-box img { max-width: 100%; border-radius: 6px; margin: 8px 0; }
-    .preview-box u { text-decoration: underline; text-decoration-color: var(--highlight); text-decoration-thickness: 2px; }
+    
+    /* Discord-esque Typography in Preview */
+    .preview-box p { margin-bottom: 8px; }
+    .preview-box img { max-width: 100%; border-radius: 6px; margin: 8px 0; display: block; }
+    .preview-box strong { font-weight: 700; color: #fff; }
+    
+    /* Discord flavor: # = H1 (Boldest), ## = H2 (Semi), ### = H3 (Norm) */
+    .preview-box h1 { font-size: 1.4rem; font-weight: 800; color: #fff; margin: 12px 0 6px; border-bottom: 1px solid #4f545c; padding-bottom: 4px; }
+    .preview-box h2 { font-size: 1.2rem; font-weight: 700; color: #fff; margin: 10px 0 5px; }
+    .preview-box h3 { font-size: 1.0rem; font-weight: 600; color: #fff; margin: 8px 0 4px; }
+    
+    /* Underline */
+    .preview-box u { text-decoration: underline; text-decoration-thickness: 2px; }
+    
+    /* Code Blocks */
+    .preview-box code { 
+      background: #202225; 
+      padding: 2px 4px; 
+      border-radius: 3px; 
+      font-family: monospace; 
+      font-size: 0.85em; 
+    }
+    .preview-box pre {
+      background: #202225;
+      padding: 8px;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin: 8px 0;
+    }
+    .preview-box pre code { background: transparent; padding: 0; }
+    
+    /* Blockquote */
+    .preview-box blockquote {
+      border-left: 4px solid #4f545c;
+      margin: 8px 0;
+      padding-left: 12px;
+      color: #8e9297;
+    }
 
     /* Modal Actions */
     .action-row { display: flex; gap: 12px; margin-top: auto; padding-top: 10px; }
@@ -361,11 +410,11 @@
     <div class="modal-panel">
       <h3 id="modalHeader" class="text-xl font-bold mb-2 text-gray-800">Edit Card</h3>
       
-      <div class="modal-body space-y-4">
+      <div class="modal-body">
         <!-- Icon Input (Columns only) -->
         <div id="iconInputWrapper" style="display:none;">
           <label class="text-xs font-bold text-gray-500 uppercase">Icon / Emoji</label>
-          <input id="iconInput" placeholder="e.g. rocket, 🚀, or material icon name" />
+          <input id="iconInput" placeholder="e.g. use a direct emoji such as 💡 or 🚀 etc." />
         </div>
 
         <div>
@@ -375,14 +424,11 @@
 
         <!-- Editor & Preview -->
         <div>
-          <div class="flex justify-between items-center mb-1">
-            <label class="text-xs font-bold text-gray-500 uppercase">Content (Markdown)</label>
-            <span class="text-xs text-blue-500 cursor-pointer" id="togglePreviewBtn">Toggle Preview</span>
-          </div>
+          <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Appended SubText Branch (Markdown Supported)</label>
+          <textarea id="summary" rows="4" placeholder="Type here... # Bold header, **bold**, __underline__"></textarea>
           
-          <textarea id="summary" rows="5" placeholder="Support: **bold**, __underline__, images (paste from clipboard)..."></textarea>
-          
-          <div id="preview" class="preview-box hidden mt-2"></div>
+          <label class="text-xs font-bold text-gray-500 uppercase mt-2 block">Live Preview</label>
+          <div id="preview" class="preview-box"></div>
         </div>
       </div>
 
@@ -403,14 +449,11 @@
       <div class="modal-body text-sm text-gray-700 leading-relaxed">
         <p class="mb-2">A powerful, offline-first project planner.</p>
         <ul class="list-disc pl-5 space-y-1 mb-4">
-          <li><strong>Drag-like feel:</strong> Smooth horizontal scrolling.</li>
+          <li><strong>Responsive:</strong> Works on desktop and mobile.</li>
           <li><strong>Rich Media:</strong> Paste images directly from clipboard.</li>
-          <li><strong>Markdown:</strong> Use **bold**, __underline__, and more.</li>
+          <li><strong>Markdown:</strong> # Headers, **Bold**, __Underline__.</li>
           <li><strong>Secure:</strong> Data stays in your browser.</li>
         </ul>
-        <div class="bg-blue-50 p-3 rounded text-xs border border-blue-200">
-          <strong>Tip:</strong> On mobile, swipe left/right to navigate columns.
-        </div>
       </div>
       <label class="flex items-center gap-2 text-sm mt-4 text-gray-600">
         <input type="checkbox" id="dontShow"> Don't show again
@@ -431,11 +474,13 @@
         <p><strong>Editing:</strong> Click the pencil icon or the card body.</p>
         <p><strong>Deleting:</strong> Open a card/column and click the red "Delete" button.</p>
         <hr>
-        <p><strong>Markdown Cheatsheet:</strong></p>
+        <p><strong>Discord-style Markdown:</strong></p>
         <code class="block bg-gray-100 p-2 rounded text-xs">
-          **Bold Text**<br>
+          # Huge Bold Text<br>
+          ## Semi Bold Text<br>
+          ### Normal Bold Text<br>
+          **Regular Bold**<br>
           __Underline__<br>
-          - List Item<br>
           ![Alt](Image URL) or Paste Image
         </code>
       </div>
@@ -486,7 +531,6 @@
     let mode = null; // 'main', 'sub', 'editMain', 'editSub', 'view'
     let currCol = null;
     let currSub = null;
-    let isPreviewVisible = false;
 
     // Material Icons list for detection
     const materialIcons = ['lightbulb', 'check_circle', 'autorenew', 'settings', 'folder_open', 'note', 'rocket_launch', 'star', 'work', 'code'];
@@ -500,6 +544,13 @@
       }
     };
     marked.use({ renderer: customRenderer });
+
+    // --- LIVE PREVIEW ---
+    summaryEl.addEventListener('input', () => {
+      // Basic raw HTML prevention could be done here if needed, 
+      // but 'marked' handles sanitation usually. For local app, simple is fine.
+      preview.innerHTML = marked.parse(summaryEl.value || '*Start typing to preview...*');
+    });
 
     // --- CORE FUNCTIONS ---
 
@@ -615,13 +666,8 @@
       titleEl.value = '';
       summaryEl.value = '';
       iconInput.value = '';
-      preview.innerHTML = '';
-      preview.classList.add('hidden');
-      summaryEl.classList.remove('hidden');
-      isPreviewVisible = false;
-      document.getElementById('togglePreviewBtn').textContent = 'Toggle Preview';
       
-      // Defaults
+      // Default reset
       iconInputWrapper.style.display = 'none';
       confirmBtn.classList.add('hidden');
       editBtn.classList.add('hidden');
@@ -647,8 +693,7 @@
         modalHeader.textContent = "View Card";
         titleEl.value = sub.title;
         summaryEl.value = sub.summary;
-        // Auto show preview in view mode
-        togglePreview(); 
+        
         editBtn.classList.remove('hidden');
         editBtn.textContent = "Edit Card";
         deleteBtn.classList.remove('hidden');
@@ -670,6 +715,9 @@
         editBtn.classList.remove('hidden');
         editBtn.textContent = "Update Column";
       }
+
+      // Initialize Preview
+      preview.innerHTML = marked.parse(summaryEl.value || '*Start typing to preview...*');
     }
 
     function closePanel() {
@@ -687,27 +735,6 @@
         location.reload();
       }
     };
-
-    // Toggle Preview
-    document.getElementById('togglePreviewBtn').onclick = togglePreview;
-    
-    function togglePreview() {
-      isPreviewVisible = !isPreviewVisible;
-      const btn = document.getElementById('togglePreviewBtn');
-      
-      if(isPreviewVisible) {
-        // Show Preview
-        preview.innerHTML = marked.parse(summaryEl.value);
-        summaryEl.classList.add('hidden');
-        preview.classList.remove('hidden');
-        btn.textContent = 'Edit Markdown';
-      } else {
-        // Show Editor
-        summaryEl.classList.remove('hidden');
-        preview.classList.add('hidden');
-        btn.textContent = 'View Preview';
-      }
-    }
 
     // Create Logic
     confirmBtn.onclick = () => {
@@ -738,8 +765,6 @@
         mode = 'editSub';
         modalHeader.textContent = "Editing Card...";
         editBtn.textContent = "Save Changes";
-        // Ensure editor is visible
-        if(isPreviewVisible) togglePreview();
         return;
       }
 
@@ -779,7 +804,8 @@
             // Insert at cursor
             const start = summaryEl.selectionStart;
             summaryEl.value = summaryEl.value.substring(0, start) + mdImage + summaryEl.value.substring(summaryEl.selectionEnd);
-            // Notify user visually could be added here
+            // Trigger input event to update preview immediately
+            summaryEl.dispatchEvent(new Event('input'));
           };
           reader.readAsDataURL(blob);
         }
