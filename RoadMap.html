@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   
   <!-- DISCORD / SOCIAL META TAGS -->
-  <title>Project Roadmap 2025</title>
+  <title>Roadmap</title>
   <meta name="description" content="A professional, local-storage based roadmap and Kanban board planner." />
   <meta name="theme-color" content="#1c2541">
   
   <!-- Open Graph / Facebook / Discord -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://roadmap.app/" />
-  <meta property="og:title" content="Project Roadmap 2025" />
+  <meta property="og:title" content="---Road-Map---" />
   <meta property="og:description" content="Organize your tasks with this dynamic, offline-capable roadmap tool featuring Markdown support and drag-and-drop aesthetics." />
   <meta property="og:image" content="https://placehold.co/1200x630/1c2541/64ffda.png?text=Roadmap+2025" />
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://roadmap.app/" />
-  <meta property="twitter:title" content="Project Roadmap 2025" />
+  <meta property="twitter:title" content="---Road-Map---" />
   <meta property="twitter:description" content="Organize your tasks with this dynamic, offline-capable roadmap tool." />
   <meta property="twitter:image" content="https://placehold.co/1200x630/1c2541/64ffda.png?text=Roadmap+2025" />
 
@@ -49,13 +49,49 @@
     /* Global Reset & Typography */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     
+    @keyframes roadSlide {
+      from { background-position: 0 0; }
+      to { background-position: 300px 0; } /* Slide distance matches pattern width */
+    }
+
     body {
-      display: flex; flex-direction: Lane; height: 100vh; height: 100dvh; /* Dynamic viewport height */
+      display: flex; 
+      flex-direction: column; /* FIX: Was 'Lane' */
+      height: 100vh; 
+      height: 100dvh; /* Dynamic viewport height */
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
       color: var(--text-light);
       overflow: hidden; /* Prevent body scroll, handle inside containers */
+      position: relative; /* Needed for ::before */
     }
+
+    /* Background Sliding Dashed Road Line Effect */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 50%; /* Center vertically */
+      transform: translateY(-50%);
+      left: 0; right: 0;
+      z-index: -1; 
+      pointer-events: none;
+      opacity: 0.15; 
+      height: 2px; /* Line thickness */
+
+      /* Dashed Road Line Pattern - Repeating Linear Gradient */
+      background-image: repeating-linear-gradient(
+        to right,
+        rgba(100, 255, 218, 0.5) 0px, 
+        rgba(100, 255, 218, 0.5) 150px, 
+        transparent 150px, 
+        transparent 300px 
+      );
+      background-repeat: repeat-x;
+      background-size: 300px 100%; /* Repeat every 300px horizontally */
+      
+      animation: roadSlide 10s linear infinite; /* Apply the sliding animation */
+    }
+
 
     /* Scrollbar Styling - ENFORCED CUSTOM THEME */
     /* Firefox */
@@ -92,7 +128,7 @@
       position: absolute; top: 50%; transform: translateY(-50%);
       cursor: pointer; color: var(--text-light); opacity: 0.7;
       transition: opacity 0.2s, color 0.2s;
-      padding: 10px; /* Larger touch target */
+      padding: 10px; 
     }
     .header-btn:hover { opacity: 1; color: var(--highlight); }
     #infoBtn { left: 16px; }
@@ -104,18 +140,18 @@
       display: flex;
       gap: 20px;
       padding: 24px;
-      padding-right: 0; /* CRITICAL FIX: We use ::after for right padding to prevent cutoff */
+      padding-right: 0; 
       overflow-x: auto;
-      overflow-y: hidden; /* Hide vertical scroll on board container */
+      overflow-y: hidden; 
       align-items: flex-start;
       scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+      -webkit-overflow-scrolling: touch; 
     }
     
-    /* Spacer to fix cut-off end - Forces scrollable area to extend past last item */
+    /* Spacer to fix cut-off end */
     #board::after {
       content: '';
-      min-width: 24px; /* Matches left padding */
+      min-width: 24px; 
       height: 1px;
       display: block;
     }
@@ -126,7 +162,8 @@
       border-radius: var(--card-radius);
       width: 300px; min-width: 300px;
       max-height: 100%;
-      display: flex; flex-direction: Lane;
+      display: flex; 
+      flex-direction: column; /* FIX: Was 'Lane' */
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       border: 1px solid rgba(255,255,255,0.05);
       transition: transform 0.2s, width 0.2s;
@@ -136,7 +173,7 @@
       padding: 16px;
       display: flex; align-items: center; justify-content: space-between;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      flex-shrink: 0; /* Don't shrink header */
+      flex-shrink: 0; 
     }
     
     .Lane-header .title {
@@ -159,7 +196,7 @@
       padding: 12px;
       overflow-y: auto;
       flex: 1; /* Take remaining height */
-      min-height: 50px; /* Ensure drop area exists */
+      min-height: 50px; 
     }
 
     /* Subcard Styles */
@@ -170,6 +207,7 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
       border-left: 4px solid var(--highlight);
+      user-select: none; /* Prevent text selection during drag/tap */
     }
     .subcard:active { transform: scale(0.98); }
     .subcard:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
@@ -185,7 +223,6 @@
       position: absolute; top: 6px; right: 6px;
       opacity: 0; transition: opacity 0.2s;
     }
-    /* Show actions on hover (desktop) or always visible if needed logic added, kept clean for now */
     .subcard:hover .card-actions { opacity: 1; }
 
     .card-actions button {
@@ -214,10 +251,12 @@
       min-width: 300px; width: 300px; height: 200px;
       border: 2px dashed rgba(255,255,255,0.2);
       border-radius: var(--card-radius);
-      display: flex; flex-direction: Lane;
+      display: flex; 
+      flex-direction: column; /* FIX: Was 'Lane' */
       align-items: center; justify-content: center;
       color: rgba(255,255,255,0.5); cursor: pointer;
       transition: all 0.2s;
+      flex-shrink: 0; /* Prevents shrinking on board */
     }
     #addMain:hover { border-color: var(--highlight); color: var(--highlight); background: rgba(100,255,218,0.05); }
 
@@ -234,8 +273,10 @@
       background: var(--panel-bg); color: var(--text-dark);
       border-radius: 16px; padding: 24px;
       width: 100%; max-width: 600px;
-      max-height: 85vh; max-height: 85dvh; /* Safety for mobile bars */
-      display: flex; flex-direction: Lane; gap: 16px;
+      max-height: 85vh; max-height: 85dvh; 
+      display: flex; 
+      flex-direction: column; /* FIX: Was 'Lane' */
+      gap: 16px;
       box-shadow: 0 25px 50px rgba(0,0,0,0.5);
       animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -248,9 +289,9 @@
     .modal-body {
       overflow-y: auto;
       flex: 1;
-      padding-right: 5px; /* Space for scrollbar */
+      padding-right: 5px; 
       display: flex;
-      flex-direction: Lane;
+      flex-direction: column; /* FIX: Was 'Lane' */
       gap: 16px;
     }
 
@@ -262,11 +303,11 @@
       background: #fff; color: #333; outline: none;
       transition: border-color 0.2s;
     }
-    input:focus, textarea:focus { border-color: #007bff; }
+    input:focus, textarea:focus { border-color: var(--highlight); box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.5); }
     
     /* Live Preview Styles - Discord Flavor */
     .preview-box {
-      background: #2f3136; /* Discord Dark */
+      background: #2f3136; 
       color: #dcddde;
       border: 1px solid #202225;
       padding: 16px; 
@@ -285,7 +326,7 @@
     .preview-box img { max-width: 100%; border-radius: 6px; margin: 8px 0; display: block; }
     .preview-box strong { font-weight: 700; color: #fff; }
     
-    /* Discord flavor: # = H1 (Boldest), ## = H2 (Semi), ### = H3 (Norm) */
+    /* Markdown headers */
     .preview-box h1 { font-size: 1.4rem; font-weight: 800; color: #fff; margin: 12px 0 6px; border-bottom: 1px solid #4f545c; padding-bottom: 4px; }
     .preview-box h2 { font-size: 1.2rem; font-weight: 700; color: #fff; margin: 10px 0 5px; }
     .preview-box h3 { font-size: 1.0rem; font-weight: 600; color: #fff; margin: 8px 0 4px; }
@@ -319,16 +360,26 @@
     }
 
     /* Modal Actions */
-    .action-Column { display: flex; gap: 12px; margin-top: auto; padding-top: 10px; }
+    .action-Column { 
+        display: flex; 
+        gap: 12px; 
+        margin-top: auto; 
+        padding-top: 10px; 
+        flex-direction: row; /* Default layout for action buttons */
+    } 
     .btn {
       flex: 1; padding: 14px; border: none; border-radius: 8px;
       font-weight: 600; cursor: pointer; font-size: 1rem;
       display: flex; align-items: center; justify-content: center;
+      transition: background-color 0.2s, transform 0.1s;
     }
-    .btn-primary { background: #007bff; color: white; }
-    .btn-primary:hover { background: #0069d9; }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--highlight); color: var(--bg-start); }
+    .btn-primary:hover { background: var(--highlight-hover); }
     .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { background: #d94548; }
     .btn-secondary { background: #6c757d; color: white; }
+    .btn-secondary:hover { background: #5a6268; }
 
     /* Footer */
     footer {
@@ -336,16 +387,17 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 0.8rem; color: rgba(255,255,255,0.4);
       flex-shrink: 0;
+      z-index: 10;
     }
 
     /* Mobile / Responsive Vertical Stack */
     @media (max-width: 800px) {
       /* Switch board to vertical stack */
       #board {
-        flex-direction: Lane;
-        align-items: center; /* Center cards */
-        overflow-x: hidden; /* No horizontal scroll */
-        overflow-y: auto;   /* Vertical scroll enabled */
+        flex-direction: column; /* FIX: Was 'Lane' */
+        align-items: center; 
+        overflow-x: hidden; 
+        overflow-y: auto;   
         padding: 20px;
         gap: 24px;
       }
@@ -356,17 +408,18 @@
       /* Make Lanes full width relative to container, but capped */
       .Lane { 
         width: 100%; 
-        max-width: 500px; /* readable max width */
+        max-width: 500px; 
         min-width: 0; 
         height: auto;
-        max-height: 600px; /* cap height to keep other cols reachable */
-        margin: 0; /* Gap handles spacing */
+        max-height: 600px; 
+        margin: 0; 
         flex-shrink: 0;
+        flex-direction: column; /* FIX: Was 'Lane' */
       }
       
       /* Ensure subcards scroll within the limited Lane height */
       .subcards-container {
-        max-height: 400px; /* Inner scroll limit */
+        max-height: 400px; 
       }
 
       /* Adjust Add Button */
@@ -379,7 +432,11 @@
 
       .logo-text { font-size: 1.2rem; }
       .modal-panel { padding: 16px; max-height: 90dvh; width: 95%; }
-      .action-Column { flex-direction: Lane; }
+      
+      /* Stack modal buttons vertically on mobile */
+      .action-Column { 
+        flex-direction: column; /* FIX: Was 'Lane' */
+      }
       .btn { padding: 12px; }
     }
   </style>
@@ -402,7 +459,7 @@
 
   <!-- Footer -->
   <footer>
-    Roadmap 2025 • PGD Secure
+    ---Road-Map--- • PGD Secure
   </footer>
 
   <!-- MAIN MODAL (Add/Edit/View) -->
@@ -414,18 +471,18 @@
         <!-- Icon Input (Lanes only) -->
         <div id="iconInputWrapper" style="display:none;">
           <label class="text-xs font-bold text-gray-500 uppercase">Icon / Emoji</label>
-          <input id="iconInput" placeholder="e.g. use a direct emoji such as 💡 or 🚀 etc." />
+          <input id="iconInput" placeholder="e.g. use a direct emoji such as 💡 or 🚀." />
         </div>
 
         <div>
-          <label class="text-xs font-bold text-gray-500 uppercase">New Lane/Column Title</label>
+          <label class="text-xs font-bold text-gray-500 uppercase">Title</label>
           <input id="title" placeholder="Enter title..." />
         </div>
 
         <!-- Editor & Preview -->
         <div>
           <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Appended SubText Branch (Markdown Supported)</label>
-          <textarea id="summary" Columns="4" placeholder="Type here... # Bold header, **bold**, __underline__"></textarea>
+          <textarea id="summary" rows="4" placeholder="Type here... # Bold header, **bold**, __underline__"></textarea>
           
           <label class="text-xs font-bold text-gray-500 uppercase mt-2 block">Live Preview</label>
           <div id="preview" class="preview-box"></div>
@@ -452,7 +509,7 @@
           <li><strong>Responsive:</strong> Works on desktop and mobile.</li>
           <li><strong>Rich Media:</strong> Paste images directly from clipboard.</li>
           <li><strong>Markdown:</strong> # Headers, **Bold**, __Underline__.</li>
-          <li><strong>Secure:</strong> Data stays in your bColumnser.</li>
+          <li><strong>Secure:</strong> Data stays in your browser.</li>
         </ul>
       </div>
       <label class="flex items-center gap-2 text-sm mt-4 text-gray-600">
@@ -471,7 +528,7 @@
       <div class="modal-body text-sm text-gray-700 space-y-3">
         <p><strong>Adding Lanes/Columns:</strong> Scroll to the far right and click the big dashed box.</p>
         <p><strong>Adding Cards:</strong> Click "+ Add Card" at the bottom of any Lane.</p>
-        <p><strong>Editing:</strong> Click the pencil icon or the card body.</p>
+        <p><strong>Editing:</strong> Click the card body, or the pencil icon on the Lane header.</p>
         <p><strong>Deleting:</strong> Open a card/Lane and click the red "Delete" button.</p>
         <hr>
         <p><strong>Discord-style Markdown:</strong></p>
@@ -533,7 +590,7 @@
     let currSub = null;
 
     // Material Icons list for detection
-    const materialIcons = ['lightbulb', 'check_circle', 'autorenew', 'settings', 'folder_open', 'note', 'rocket_launch', 'star', 'work', 'code'];
+    const materialIcons = ['lightbulb', 'check_circle', 'autorenew', 'settings', 'folder_open', 'note', 'rocket_launch', 'star', 'work', 'code', 'folder'];
 
     // --- SETUP MARKED ---
     const customRenderer = {
@@ -547,8 +604,6 @@
 
     // --- LIVE PREVIEW ---
     summaryEl.addEventListener('input', () => {
-      // Basic raw HTML prevention could be done here if needed, 
-      // but 'marked' handles sanitation usually. For local app, simple is fine.
       preview.innerHTML = marked.parse(summaryEl.value || '*Start typing to preview...*');
     });
 
@@ -569,10 +624,12 @@
 
         // Icon Logic
         let iconHtml = '';
-        if (col.icon && materialIcons.includes(col.icon)) {
-          iconHtml = `<span class="material-icons">${col.icon}</span>`;
-        } else if (col.icon) {
-          iconHtml = `<span class="custom-icon">${col.icon}</span>`;
+        const iconValue = col.icon ? col.icon.trim() : 'folder';
+
+        if (materialIcons.includes(iconValue)) {
+          iconHtml = `<span class="material-icons">${iconValue}</span>`;
+        } else if (iconValue) {
+          iconHtml = `<span class="custom-icon">${iconValue}</span>`;
         } else {
           iconHtml = `<span class="material-icons">folder</span>`;
         }
@@ -586,15 +643,16 @@
             <span class="title" title="${col.title}">${col.title}</span>
           </div>
           <div class="col-actions flex">
-            <button class="edit-col material-icons text-sm">edit</button>
-            <button class="del-col material-icons text-sm">delete</button>
+            <button class="edit-col material-icons text-sm" title="Edit Lane">edit</button>
+            <button class="del-col material-icons text-sm" title="Delete Lane">delete</button>
           </div>
         `;
         
         // Header Events
         header.querySelector('.edit-col').onclick = () => openPanel('editMain', col);
-        header.querySelector('.del-col').onclick = () => {
-          if(confirm(`Delete Lane "${col.title}"?`)) {
+        header.querySelector('.del-col').onclick = (e) => {
+            e.stopPropagation();
+          if(confirm(`Delete Lane "${col.title}"? This will delete all cards inside.`)) {
             Lanes = Lanes.filter(c => c.id !== col.id);
             save();
           }
@@ -613,7 +671,7 @@
           const imgMatch = card.summary.match(/!\[.*?\]\((.*?)\)/);
           let imgHtml = '';
           if (imgMatch) {
-            imgHtml = `<img src="${imgMatch[1]}" loading="lazy" />`;
+            imgHtml = `<img src="${imgMatch[1]}" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/300x120/f7f7f7/6c757d?text=Image+Failed'" />`;
           }
 
           cardDiv.innerHTML = `
@@ -672,17 +730,19 @@
       confirmBtn.classList.add('hidden');
       editBtn.classList.add('hidden');
       deleteBtn.classList.add('hidden');
+      titleEl.readOnly = false;
+      summaryEl.readOnly = false;
       
       details.style.display = 'flex'; // Show Overlay
 
       // Configure based on Mode
       if (mode === 'main') {
-        modalHeader.textContent = "New Lane";
+        modalHeader.textContent = "New Lane/Column";
         titleEl.placeholder = "Lane Name (e.g. Q4 Goals)";
         iconInputWrapper.style.display = 'block';
         confirmBtn.classList.remove('hidden');
         confirmBtn.textContent = "Create Lane";
-      } 
+      }
       else if (mode === 'sub') {
         modalHeader.textContent = `New Card in "${col.title}"`;
         titleEl.placeholder = "Card Title";
@@ -693,6 +753,8 @@
         modalHeader.textContent = "View Card";
         titleEl.value = sub.title;
         summaryEl.value = sub.summary;
+        titleEl.readOnly = true;
+        summaryEl.readOnly = true;
         
         editBtn.classList.remove('hidden');
         editBtn.textContent = "Edit Card";
@@ -709,15 +771,17 @@
       else if (mode === 'editMain') {
         modalHeader.textContent = "Edit Lane";
         titleEl.value = col.title;
-        summaryEl.value = col.summary || ''; // Lanes usually don't have summaries but keeping structure
+        summaryEl.value = col.summary || ''; 
         iconInputWrapper.style.display = 'block';
         iconInput.value = col.icon || '';
         editBtn.classList.remove('hidden');
         editBtn.textContent = "Update Lane";
+        deleteBtn.classList.remove('hidden'); // Allow deleting lane from modal
       }
 
       // Initialize Preview
       preview.innerHTML = marked.parse(summaryEl.value || '*Start typing to preview...*');
+      titleEl.focus();
     }
 
     function closePanel() {
@@ -761,9 +825,11 @@
     // Edit/Update Logic
     editBtn.onclick = () => {
       if (mode === 'view') {
-        // Switch to edit mode
+        // If in view mode, switch to edit mode
         mode = 'editSub';
         modalHeader.textContent = "Editing Card...";
+        titleEl.readOnly = false;
+        summaryEl.readOnly = false;
         editBtn.textContent = "Save Changes";
         return;
       }
@@ -772,6 +838,7 @@
       if (mode === 'editMain') {
         currCol.title = titleEl.value;
         currCol.icon = iconInput.value.trim() || 'folder';
+        currCol.summary = summaryEl.value; // Store summary for Lane too
       } else {
         currSub.title = titleEl.value;
         currSub.summary = summaryEl.value;
@@ -782,16 +849,19 @@
 
     // Delete Logic
     deleteBtn.onclick = () => {
-      if(confirm('Are you sure you want to delete this item?')) {
-        if (mode === 'editSub' || mode === 'view') {
-          currCol.subcards = currCol.subcards.filter(c => c.id !== currSub.id);
+        if(mode === 'editMain') {
+            if(!confirm(`Are you sure you want to delete the Lane "${currCol.title}" and ALL its cards?`)) return;
+            Lanes = Lanes.filter(c => c.id !== currCol.id);
+        } else if (mode === 'editSub' || mode === 'view') {
+            if(!confirm(`Are you sure you want to delete the Card "${currSub.title}"?`)) return;
+            currCol.subcards = currCol.subcards.filter(c => c.id !== currSub.id);
         }
-        save();
-        closePanel();
-      }
+        
+      save();
+      closePanel();
     };
 
-    // Paste Image Logic
+    // Paste Image Logic (Handles clipboard image to Data URL)
     summaryEl.onpaste = (e) => {
       const items = (e.clipboardData || e.originalEvent.clipboardData).items;
       for (let item of items) {
@@ -804,7 +874,6 @@
             // Insert at cursor
             const start = summaryEl.selectionStart;
             summaryEl.value = summaryEl.value.substring(0, start) + mdImage + summaryEl.value.substring(summaryEl.selectionEnd);
-            // Trigger input event to update preview immediately
             summaryEl.dispatchEvent(new Event('input'));
           };
           reader.readAsDataURL(blob);
@@ -812,7 +881,7 @@
       }
     };
 
-    // Start Modal
+    // Start Modal Management
     if (!localStorage.getItem('hideIntro')) {
       startModal.style.display = 'flex';
     }
@@ -822,6 +891,14 @@
       }
       startModal.style.display = 'none';
     };
+
+    // Close modal on outside click (only if not confirming/editing)
+    details.addEventListener('click', (e) => {
+        if (e.target.id === 'details') {
+            closePanel();
+        }
+    });
+
 
     // Initial Render
     render();
