@@ -50,7 +50,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     
     body {
-      display: flex; flex-direction: column; height: 100vh; height: 100dvh; /* Dynamic viewport height */
+      display: flex; flex-direction: Lane; height: 100vh; height: 100dvh; /* Dynamic viewport height */
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
       color: var(--text-light);
@@ -120,31 +120,31 @@
       display: block;
     }
 
-    /* Column Styles */
-    .column {
+    /* Lane Styles */
+    .Lane {
       background: var(--card-bg); 
       border-radius: var(--card-radius);
       width: 300px; min-width: 300px;
       max-height: 100%;
-      display: flex; flex-direction: column;
+      display: flex; flex-direction: Lane;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       border: 1px solid rgba(255,255,255,0.05);
       transition: transform 0.2s, width 0.2s;
     }
 
-    .column-header {
+    .Lane-header {
       padding: 16px;
       display: flex; align-items: center; justify-content: space-between;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       flex-shrink: 0; /* Don't shrink header */
     }
     
-    .column-header .title {
+    .Lane-header .title {
       flex: 1; font-weight: 700; font-size: 1rem; margin: 0 10px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    .column-header .material-icons, .column-header .custom-icon {
+    .Lane-header .material-icons, .Lane-header .custom-icon {
       color: var(--highlight); font-size: 20px;
     }
 
@@ -154,7 +154,7 @@
     }
     .col-actions button:hover { color: #fff; }
 
-    /* Subcard Container (Scrollable Area inside Column) */
+    /* Subcard Container (Scrollable Area inside Lane) */
     .subcards-container {
       padding: 12px;
       overflow-y: auto;
@@ -209,12 +209,12 @@
     }
     .inline-add:hover { background: var(--highlight); color: var(--bg-start); }
 
-    /* Add Main Column Placeholder */
+    /* Add Main Lane Placeholder */
     #addMain {
       min-width: 300px; width: 300px; height: 200px;
       border: 2px dashed rgba(255,255,255,0.2);
       border-radius: var(--card-radius);
-      display: flex; flex-direction: column;
+      display: flex; flex-direction: Lane;
       align-items: center; justify-content: center;
       color: rgba(255,255,255,0.5); cursor: pointer;
       transition: all 0.2s;
@@ -235,7 +235,7 @@
       border-radius: 16px; padding: 24px;
       width: 100%; max-width: 600px;
       max-height: 85vh; max-height: 85dvh; /* Safety for mobile bars */
-      display: flex; flex-direction: column; gap: 16px;
+      display: flex; flex-direction: Lane; gap: 16px;
       box-shadow: 0 25px 50px rgba(0,0,0,0.5);
       animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -250,7 +250,7 @@
       flex: 1;
       padding-right: 5px; /* Space for scrollbar */
       display: flex;
-      flex-direction: column;
+      flex-direction: Lane;
       gap: 16px;
     }
 
@@ -319,7 +319,7 @@
     }
 
     /* Modal Actions */
-    .action-row { display: flex; gap: 12px; margin-top: auto; padding-top: 10px; }
+    .action-Column { display: flex; gap: 12px; margin-top: auto; padding-top: 10px; }
     .btn {
       flex: 1; padding: 14px; border: none; border-radius: 8px;
       font-weight: 600; cursor: pointer; font-size: 1rem;
@@ -342,7 +342,7 @@
     @media (max-width: 800px) {
       /* Switch board to vertical stack */
       #board {
-        flex-direction: column;
+        flex-direction: Lane;
         align-items: center; /* Center cards */
         overflow-x: hidden; /* No horizontal scroll */
         overflow-y: auto;   /* Vertical scroll enabled */
@@ -353,8 +353,8 @@
       /* Disable the right-side spacer used for horizontal layout */
       #board::after { display: none; }
 
-      /* Make columns full width relative to container, but capped */
-      .column { 
+      /* Make Lanes full width relative to container, but capped */
+      .Lane { 
         width: 100%; 
         max-width: 500px; /* readable max width */
         min-width: 0; 
@@ -364,7 +364,7 @@
         flex-shrink: 0;
       }
       
-      /* Ensure subcards scroll within the limited column height */
+      /* Ensure subcards scroll within the limited Lane height */
       .subcards-container {
         max-height: 400px; /* Inner scroll limit */
       }
@@ -379,7 +379,7 @@
 
       .logo-text { font-size: 1.2rem; }
       .modal-panel { padding: 16px; max-height: 90dvh; width: 95%; }
-      .action-row { flex-direction: column; }
+      .action-Column { flex-direction: Lane; }
       .btn { padding: 12px; }
     }
   </style>
@@ -397,7 +397,7 @@
 
   <!-- Board Area -->
   <div id="board">
-    <!-- Columns render here -->
+    <!-- Lanes render here -->
   </div>
 
   <!-- Footer -->
@@ -411,21 +411,21 @@
       <h3 id="modalHeader" class="text-xl font-bold mb-2 text-gray-800">Edit Card</h3>
       
       <div class="modal-body">
-        <!-- Icon Input (Columns only) -->
+        <!-- Icon Input (Lanes only) -->
         <div id="iconInputWrapper" style="display:none;">
           <label class="text-xs font-bold text-gray-500 uppercase">Icon / Emoji</label>
           <input id="iconInput" placeholder="e.g. use a direct emoji such as 💡 or 🚀 etc." />
         </div>
 
         <div>
-          <label class="text-xs font-bold text-gray-500 uppercase">Title</label>
+          <label class="text-xs font-bold text-gray-500 uppercase">New Lane/Column Title</label>
           <input id="title" placeholder="Enter title..." />
         </div>
 
         <!-- Editor & Preview -->
         <div>
           <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Appended SubText Branch (Markdown Supported)</label>
-          <textarea id="summary" rows="4" placeholder="Type here... # Bold header, **bold**, __underline__"></textarea>
+          <textarea id="summary" Columns="4" placeholder="Type here... # Bold header, **bold**, __underline__"></textarea>
           
           <label class="text-xs font-bold text-gray-500 uppercase mt-2 block">Live Preview</label>
           <div id="preview" class="preview-box"></div>
@@ -433,7 +433,7 @@
       </div>
 
       <!-- Actions -->
-      <div class="action-row" id="actions">
+      <div class="action-Column" id="actions">
         <button id="confirmBtn" class="btn btn-primary">Save Card</button>
         <button id="editBtn" class="btn btn-primary hidden">Save Changes</button>
         <button id="dangerBtn" class="btn btn-danger hidden">Delete</button>
@@ -452,13 +452,13 @@
           <li><strong>Responsive:</strong> Works on desktop and mobile.</li>
           <li><strong>Rich Media:</strong> Paste images directly from clipboard.</li>
           <li><strong>Markdown:</strong> # Headers, **Bold**, __Underline__.</li>
-          <li><strong>Secure:</strong> Data stays in your browser.</li>
+          <li><strong>Secure:</strong> Data stays in your bColumnser.</li>
         </ul>
       </div>
       <label class="flex items-center gap-2 text-sm mt-4 text-gray-600">
         <input type="checkbox" id="dontShow"> Don't show again
       </label>
-      <div class="action-row">
+      <div class="action-Column">
         <button id="startOk" class="btn btn-primary bg-[--highlight] text-[--bg-start] hover:bg-[#45b399] border-none">Get Started</button>
       </div>
     </div>
@@ -469,10 +469,10 @@
     <div class="modal-panel">
       <h2 class="text-xl font-bold">Help & Guide</h2>
       <div class="modal-body text-sm text-gray-700 space-y-3">
-        <p><strong>Adding Columns:</strong> Scroll to the far right and click the big dashed box.</p>
-        <p><strong>Adding Cards:</strong> Click "+ Add Card" at the bottom of any column.</p>
+        <p><strong>Adding Lanes/Columns:</strong> Scroll to the far right and click the big dashed box.</p>
+        <p><strong>Adding Cards:</strong> Click "+ Add Card" at the bottom of any Lane.</p>
         <p><strong>Editing:</strong> Click the pencil icon or the card body.</p>
-        <p><strong>Deleting:</strong> Open a card/column and click the red "Delete" button.</p>
+        <p><strong>Deleting:</strong> Open a card/Lane and click the red "Delete" button.</p>
         <hr>
         <p><strong>Discord-style Markdown:</strong></p>
         <code class="block bg-gray-100 p-2 rounded text-xs">
@@ -484,17 +484,17 @@
           ![Alt](Image URL) or Paste Image
         </code>
       </div>
-      <div class="action-row">
+      <div class="action-Column">
         <button id="infoClose" class="btn btn-secondary">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- Add Main Column Placeholder (Hidden, used by JS) -->
+  <!-- Add Main Lane Placeholder (Hidden, used by JS) -->
   <div id="addMainTemplate" style="display:none;">
     <div id="addMain">
       <span class="material-icons" style="font-size: 48px;">add_circle_outline</span>
-      <span style="margin-top: 10px; font-weight: 600;">Add New Column</span>
+      <span style="margin-top: 10px; font-weight: 600;">Add New Lane/Column</span>
     </div>
   </div>
 
@@ -523,7 +523,7 @@
     const deleteBtn = document.getElementById('dangerBtn');
 
     // State
-    let columns = JSON.parse(localStorage.getItem('columns') || 'null') || [
+    let Lanes = JSON.parse(localStorage.getItem('Lanes') || 'null') || [
       { id: 1, title: 'Ideas 💡', summary: 'New concepts', subcards: [], icon: 'lightbulb' },
       { id: 2, title: 'In Progress 🚀', summary: 'Building now', subcards: [], icon: 'rocket_launch' },
       { id: 3, title: 'Done ✅', summary: 'Completed items', subcards: [], icon: 'check_circle' }
@@ -555,17 +555,17 @@
     // --- CORE FUNCTIONS ---
 
     function save() {
-      localStorage.setItem('columns', JSON.stringify(columns));
+      localStorage.setItem('Lanes', JSON.stringify(Lanes));
       render();
     }
 
     function render() {
       board.innerHTML = '';
       
-      columns.forEach(col => {
-        // Create Column
+      Lanes.forEach(col => {
+        // Create Lane
         const colDiv = document.createElement('div');
-        colDiv.className = 'column';
+        colDiv.className = 'Lane';
 
         // Icon Logic
         let iconHtml = '';
@@ -579,7 +579,7 @@
 
         // Header
         const header = document.createElement('div');
-        header.className = 'column-header';
+        header.className = 'Lane-header';
         header.innerHTML = `
           <div class="flex items-center overflow-hidden flex-1">
             ${iconHtml}
@@ -594,8 +594,8 @@
         // Header Events
         header.querySelector('.edit-col').onclick = () => openPanel('editMain', col);
         header.querySelector('.del-col').onclick = () => {
-          if(confirm(`Delete column "${col.title}"?`)) {
-            columns = columns.filter(c => c.id !== col.id);
+          if(confirm(`Delete Lane "${col.title}"?`)) {
+            Lanes = Lanes.filter(c => c.id !== col.id);
             save();
           }
         };
@@ -649,7 +649,7 @@
         board.appendChild(colDiv);
       });
 
-      // Append "Add Column" giant button
+      // Append "Add Lane" giant button
       const addColBtn = addMainTemplate.cloneNode(true);
       addColBtn.onclick = () => openPanel('main', null);
       board.appendChild(addColBtn);
@@ -677,11 +677,11 @@
 
       // Configure based on Mode
       if (mode === 'main') {
-        modalHeader.textContent = "New Column";
-        titleEl.placeholder = "Column Name (e.g. Q4 Goals)";
+        modalHeader.textContent = "New Lane";
+        titleEl.placeholder = "Lane Name (e.g. Q4 Goals)";
         iconInputWrapper.style.display = 'block';
         confirmBtn.classList.remove('hidden');
-        confirmBtn.textContent = "Create Column";
+        confirmBtn.textContent = "Create Lane";
       } 
       else if (mode === 'sub') {
         modalHeader.textContent = `New Card in "${col.title}"`;
@@ -707,13 +707,13 @@
         deleteBtn.classList.remove('hidden');
       }
       else if (mode === 'editMain') {
-        modalHeader.textContent = "Edit Column";
+        modalHeader.textContent = "Edit Lane";
         titleEl.value = col.title;
-        summaryEl.value = col.summary || ''; // Columns usually don't have summaries but keeping structure
+        summaryEl.value = col.summary || ''; // Lanes usually don't have summaries but keeping structure
         iconInputWrapper.style.display = 'block';
         iconInput.value = col.icon || '';
         editBtn.classList.remove('hidden');
-        editBtn.textContent = "Update Column";
+        editBtn.textContent = "Update Lane";
       }
 
       // Initialize Preview
@@ -749,7 +749,7 @@
 
       if (mode === 'main') {
         newItem.icon = iconInput.value.trim() || 'folder';
-        columns.push(newItem);
+        Lanes.push(newItem);
       } else if (mode === 'sub') {
         currCol.subcards.push(newItem);
       }
