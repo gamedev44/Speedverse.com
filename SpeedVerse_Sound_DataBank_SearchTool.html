@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPV Engine Sound Sniffer - Ultimate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- Color Variables --- */
+        :root {
+            --color-primary: #FF0000; /* Racing Red */
+            --color-secondary: #FFD700; /* Gold Accent */
+            --color-background: #1A1A1A; /* Dark Mode Black/Grey */
+            --color-surface: #2C2C2C; /* Surface Grey */
+            --color-text: #FFFFFF; /* White Text */
+            --color-text-light: #AAAAAA; /* Light Grey Text */
+            --color-input-bg: #3A3A3A;
+            --spacing-unit: 10px;
+        }
+
+        /* --- Global Reset & Body Styling --- */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Aligned to top for small screens, but center for large */
+            min-height: 100vh;
+            padding: calc(4 * var(--spacing-unit)) var(--spacing-unit); /* Padding for responsiveness */
+            box-sizing: border-box; /* Include padding/border in element's total width/height */
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--color-surface);
+            padding: calc(3 * var(--spacing-unit));
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-top: 5px solid var(--color-primary);
+            box-sizing: border-box;
+        }
+        h1, h2 {
+            text-align: center;
+            color: var(--color-secondary);
+            margin-bottom: 5px;
+            font-size: 2em; /* Adjusted for better mobile scaling */
+            font-weight: 900;
+        }
+        h1 {
+            font-size: 2.5em;
+        }
+        p {
+            text-align: center;
+            color: var(--color-text-light);
+            margin-bottom: calc(2.5 * var(--spacing-unit));
+            font-size: 0.95em;
+        }
+
+        /* --- Search Bar Section --- */
+        #search-container {
+            display: flex;
+            margin-bottom: calc(3 * var(--spacing-unit));
+            /* Dynamic sizing for search bar on small screens */
+            flex-direction: row; 
+        }
+        #car-search-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--color-surface);
+            background-color: var(--color-input-bg);
+            color: var(--color-text);
+            border-radius: 6px 0 0 6px;
+            font-size: 1.1em;
+            transition: border-color 0.3s;
+            min-width: 0; /* Ensures it shrinks properly on mobile */
+        }
+        #car-search-input:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+        #search-button {
+            padding: 12px 20px;
+            background-color: var(--color-primary);
+            color: var(--color-text);
+            border: none;
+            cursor: pointer;
+            border-radius: 0 6px 6px 0;
+            font-size: 1.1em;
+            font-weight: 700;
+            transition: background-color 0.3s, transform 0.1s;
+            flex-shrink: 0; /* Prevents button from shrinking */
+        }
+        #search-button:hover {
+            background-color: #CC0000;
+            transform: translateY(-1px);
+        }
+
+        /* --- Quick Links Container Styling --- */
+        .quick-links-container {
+            margin-top: calc(3 * var(--spacing-unit));
+            padding-top: calc(2 * var(--spacing-unit));
+            border-top: 1px solid #444;
+        }
+        .section-header {
+            color: var(--color-secondary);
+            font-size: 1.3em; /* Slightly smaller for mobile */
+            font-weight: 700;
+            margin-bottom: 1.5 * var(--spacing-unit);
+            text-align: left;
+        }
+
+        /* --- Make Buttons (Dropdown) Styling - **KEY RESPONSIVE & CLICK CHANGE** --- */
+        .make-buttons {
+            display: flex;
+            gap: 10px; /* Reduced gap for mobile */
+            flex-wrap: wrap; /* Allows wrapping */
+            margin-bottom: calc(2.5 * var(--spacing-unit));
+            justify-content: center; /* Center buttons on smaller screens */
+        }
+        .make-dropdown {
+            position: relative;
+            /* Flex basis allows the button to be 100% on small, or shrink to fit on large */
+            flex: 1 1 auto; 
+            min-width: 140px; /* Minimum width for readability */
+        }
+        .make-button {
+            background-color: #444;
+            color: var(--color-text);
+            padding: 10px 15px;
+            border: 2px solid #555;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 700;
+            transition: background-color 0.3s, border-color 0.3s;
+            width: 100%; /* Important for full-width click area */
+            text-align: left; /* Keep text aligned */
+        }
+        .make-button:hover, .make-button.active {
+            background-color: #555;
+            border-color: var(--color-primary);
+        }
+
+        /* Dropdown content changes for click activation */
+        .dropdown-content {
+            display: none; /* Initially hidden */
+            position: absolute;
+            background-color: #333;
+            width: 100%; /* Take full width of parent button */
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+            z-index: 20; /* Higher z-index to be on top */
+            border-radius: 6px;
+            margin-top: 5px;
+            border: 1px solid var(--color-primary);
+            max-height: 200px; /* Set a max height */
+            overflow-y: auto; /* Scrollable if too many items */
+        }
+        
+        /* New class for activated state (controlled by JS) */
+        .make-dropdown.active .dropdown-content {
+            display: block; 
+        }
+
+        .dropdown-content a {
+            color: var(--color-text);
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .dropdown-content a:hover {
+            background-color: var(--color-primary);
+            color: var(--color-text);
+        }
+
+        /* --- Playlist Buttons Styling - **KEY RESPONSIVE** --- */
+        .playlist-buttons {
+            display: flex;
+            gap: 8px; /* Slightly smaller gap */
+            flex-wrap: wrap;
+            margin-top: calc(1.5 * var(--spacing-unit));
+            justify-content: center; /* Center buttons on smaller screens */
+        }
+        .playlist-button {
+            background-color: var(--color-primary);
+            color: var(--color-text);
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 700;
+            transition: opacity 0.3s;
+            flex-grow: 1; /* Allow growing to fill space */
+            min-width: 100px; /* Minimum width */
+            text-align: center;
+        }
+        .playlist-button:hover {
+            opacity: 0.8;
+        }
+        .suffix-note {
+            text-align: center;
+            margin-top: calc(2.5 * var(--spacing-unit));
+            font-style: italic;
+            color: var(--color-text-light);
+            font-size: 0.85em;
+        }
+
+        /* --- Media Queries for larger screens (PC) --- */
+        @media (min-width: 600px) {
+            body {
+                 align-items: center; /* Center vertically on large screens */
+            }
+            .make-buttons {
+                justify-content: flex-start; /* Left-align on PC */
+            }
+            .make-dropdown {
+                /* Reset flex basis to allow more buttons per row */
+                flex: 0 0 auto; 
+                min-width: 160px; /* Slightly larger min-width */
+            }
+            .playlist-buttons {
+                justify-content: flex-start; /* Left-align on PC */
+            }
+            .playlist-button {
+                flex-grow: 0; /* Don't force growth on PC */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔊 SpeedVerse : Invision</h1>
+    <h2>Engine Sound Search Sniffer</h2>
+    <p>Search for specific Sounds of a Vehicle Make or Model with "dyno test raw" suffix, auto added to the end. Or, jump straight to a Playlist with one of the buttons below.</p>
+
+    <div id="search-container">
+        <input type="text" id="car-search-input" placeholder="e.g., Audi R8 V10, BMW M5, C63 AMG">
+        <button id="search-button">Search Videos</button>
+    </div>
+
+    <div class="quick-links-container">
+        <div class="section-header">🔍 Quick Sound Search (Automaticaly Appends "dyno test raw")</div>
+        <div class="make-buttons">
+            <div class="make-dropdown">
+                <button class="make-button" onclick="toggleDropdown(this)">Ferrari</button>
+                <div class="dropdown-content">
+                    <a onclick="performSearch('Ferrari LaFerrari')">LaFerrari</a>
+                    <a onclick="performSearch('Ferrari F12 Berlinetta')">F12 Berlinetta</a>
+                    <a onclick="performSearch('Ferrari 458 Italia')">458 Italia</a>
+                </div>
+            </div>
+
+            <div class="make-dropdown">
+                <button class="make-button" onclick="toggleDropdown(this)">Lamborghini</button>
+                <div class="dropdown-content">
+                    <a onclick="performSearch('Lamborghini Aventador SVJ')">Aventador SVJ</a>
+                    <a onclick="performSearch('Lamborghini Huracan STO')">Huracan STO</a>
+                    <a onclick="performSearch('Lamborghini Murcielago LP670-4')">Murciélago LP670-4</a>
+                </div>
+            </div>
+
+            <div class="make-dropdown">
+                <button class="make-button" onclick="toggleDropdown(this)">Porsche</button>
+                <div class="dropdown-content">
+                    <a onclick="performSearch('Porsche 911 GT3 RS')">911 GT3 RS (992)</a>
+                    <a onclick="performSearch('Porsche Carrera GT')">Carrera GT</a>
+                    <a onclick="performSearch('Porsche 918 Spyder')">918 Spyder</a>
+                </div>
+            </div>
+
+            <div class="make-dropdown">
+                <button class="make-button" onclick="toggleDropdown(this)">Audi</button>
+                <div class="dropdown-content">
+                    <a onclick="performSearch('Audi R8 V10')">R8 V10</a>
+                    <a onclick="performSearch('Audi RS7')">RS7</a>
+                    <a onclick="performSearch('Audi RS6')">RS6</a>
+                </div>
+            </div>
+
+            <div class="make-dropdown">
+                <button class="make-button" onclick="toggleDropdown(this)">BMW</button>
+                <div class="dropdown-content">
+                    <a onclick="performSearch('BMW M4 CSL')">M4 CSL</a>
+                    <a onclick="performSearch('BMW M5 E60 V10')">M5 E60 V10</a>
+                    <a onclick="performSearch('BMW M3 G80')">M3 G80</a>
+                </div>
+            </div>
+            <button class="make-button" onclick="performSearch('Mercedes-AMG C63')">Mercedes-AMG</button>
+            <button class="make-button" onclick="performSearch('JDM Cars')">JDM</button>
+        </div>
+
+        <div class="section-header">▶️ Playlist Access (No Search Suffix)</div>
+        <div class="playlist-buttons">
+            <button class="playlist-button" onclick="openPlaylist('PLpBg-7RvfvTf-CbSZuR9ZcdxVi5WUvReW')">Lamborghini Sounds</button>
+            <button class="playlist-button" onclick="openPlaylist('PL81CFC71B541EBAEC')">BMW Sounds</button>
+            <button class="playlist-button" onclick="openPlaylist('PL792719A8CBB0C182')">Audi Sounds</button>
+            <button class="playlist-button" onclick="openPlaylist('PLpBg-7RvfvTdcPUCVcvOUGGa2k5HF84v0')">Track Only Cars</button>
+            <button class="playlist-button" onclick="openPlaylist('PLpBg-7RvfvTc97wlXQjmY7OWTd5vMfmO0')">JDM Cars</button>
+            <button class="playlist-button" onclick="openPlaylist('PLA2E431347898B7F4')">Ferrari Sounds</button>
+            <button class="playlist-button" onclick="openPlaylist('PLDA99740B8A6E6F8B')">McLaren Sounds</button>
+            <button class="playlist-button" onclick="openPlaylist('PL5F64E14AAC728F0F')">Mercedes-AMG Sounds</button>
+            <button class="playlist-button" onclick="openPlaylist('PL82101CF47F924187')">Porsche Sounds</button>
+            <button class="playlist-button" onclick="openPlaylist('PLpBg-7RvfvTfwDWgn0EfuiFc4pZZsojeP')">Koenigsegg & Pagani</button>
+            <button class="playlist-button" onclick="openPlaylist('PLpBg-7RvfvTdF8RV8qwht5gmJ-kDCG6KP')">American Cars</button>
+        </div>
+    </div>
+
+    <p class="suffix-note">
+        * Note: All Quick Model Searches in the top section are automatically suffixed with: <span style="color:var(--color-secondary); font-weight:700;">"dyno test raw"</span>
+    </p>
+</div>
+
+<script>
+    // --- Core Search & Playlist Logic (Unchanged) ---
+    const BASE_SEARCH_URL = "https://www.youtube.com/@NM2255/search?query=";
+    const BASE_PLAYLIST_URL = "https://www.youtube.com/playlist?list=";
+    const SUFFIX = " dyno test raw"; 
+
+    function performSearch(queryText) {
+        const fullQuery = queryText.trim() + SUFFIX;
+        const encodedQuery = encodeURIComponent(fullQuery);
+        const finalUrl = BASE_SEARCH_URL + encodedQuery;
+        window.open(finalUrl, '_blank');
+    }
+
+    function openPlaylist(playlistId) {
+        const finalUrl = BASE_PLAYLIST_URL + playlistId;
+        window.open(finalUrl, '_blank');
+    }
+
+    // --- NEW: Dropdown Control Logic (Fixes the hover issue for mobile/click UX) ---
+    /**
+     * Toggles the active state of the clicked dropdown menu.
+     * Closes all other open dropdowns to ensure a clean UI.
+     * @param {HTMLElement} button - The button element that was clicked.
+     */
+    function toggleDropdown(button) {
+        // Get the parent .make-dropdown div
+        const dropdown = button.closest('.make-dropdown');
+        
+        // Check if the clicked dropdown is already active
+        const isActive = dropdown.classList.contains('active');
+
+        // 1. Close ALL dropdowns
+        document.querySelectorAll('.make-dropdown').forEach(d => {
+            d.classList.remove('active');
+            d.querySelector('.make-button').classList.remove('active'); // Remove button highlight
+        });
+
+        // 2. Open the clicked dropdown ONLY if it was not already active
+        if (!isActive) {
+            dropdown.classList.add('active');
+            button.classList.add('active'); // Highlight the button
+        }
+    }
+
+    // --- NEW: Global click listener to close dropdowns when clicking outside ---
+    document.addEventListener('click', function(event) {
+        // Check if the click occurred outside any dropdown
+        if (!event.target.closest('.make-dropdown')) {
+            // Close all dropdowns
+            document.querySelectorAll('.make-dropdown.active').forEach(d => {
+                d.classList.remove('active');
+                d.querySelector('.make-button').classList.remove('active');
+            });
+        }
+    });
+
+    // --- Search Bar Event Listener (Unchanged) ---
+    document.getElementById('search-button').addEventListener('click', () => {
+        const inputElement = document.getElementById('car-search-input');
+        const userQuery = inputElement.value.trim();
+        if (userQuery) {
+            performSearch(userQuery);
+        } else {
+            alert('Please enter a car make or model to search.');
+        }
+    });
+
+    document.getElementById('car-search-input').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            document.getElementById('search-button').click();
+        }
+    });
+
+    // --- NEW: Close dropdown after a model link is clicked ---
+    document.querySelectorAll('.dropdown-content a').forEach(link => {
+        link.addEventListener('click', (event) => {
+            // Find the parent .make-dropdown and close it
+            const dropdown = event.target.closest('.make-dropdown');
+            if (dropdown) {
+                dropdown.classList.remove('active');
+                dropdown.querySelector('.make-button').classList.remove('active');
+            }
+            // The performSearch function handles the URL opening
+        });
+    });
+
+</script>
+</body>
+</html>
