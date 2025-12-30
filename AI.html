@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeedVerse F1 Neural Network : Test v128</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Sky.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Courier New', Courier, monospace; }
+        #ui-layer {
+            position: absolute;
+            top: 20px; left: 20px;
+            color: #00f2ff;
+            pointer-events: none;
+            text-shadow: 0 0 8px #00f2ff;
+            z-index: 10;
+        }
+        #leaderboard {
+            position: absolute;
+            bottom: 20px; left: 20px;
+            background: rgba(0, 10, 20, 0.85);
+            border-left: 4px solid #00f2ff;
+            padding: 15px;
+            color: #fff;
+            font-size: 12px;
+            min-width: 300px;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+            border-radius: 0 8px 8px 0;
+            pointer-events: auto;
+        }
+        #overlay {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 100;
+            pointer-events: auto;
+        }
+        .race-title { font-size: 48px; font-weight: bold; color: #fff; text-shadow: 0 0 20px #00f2ff; margin-bottom: 20px; letter-spacing: 5px; }
+        #driver-tags { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .driver-tag {
+            position: absolute;
+            color: white;
+            background: rgba(0,0,0,0.95);
+            border: 2px solid #00f2ff;
+            padding: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            transform: translate(-50%, -110%);
+            white-space: nowrap;
+            border-radius: 4px;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
+            z-index: 5;
+            display: none;
+        }
+        .telemetry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; border-top: 1px solid rgba(0, 242, 255, 0.3); padding-top: 6px; }
+        .btn {
+            pointer-events: auto;
+            background: #00f2ff;
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+        }
+        .btn:hover { background: #fff; transform: scale(1.05); box-shadow: 0 0 30px #00f2ff; }
+        .racer-entry { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 6px; 
+            padding: 8px; 
+            border-bottom: 1px solid rgba(0, 242, 255, 0.1); 
+            transition: 0.2s; 
+            cursor: pointer;
+        }
+        .racer-entry:hover { background: rgba(0, 242, 255, 0.15) !important; }
+        .racer-entry.selected { background: rgba(0, 242, 255, 0.4) !important; border-right: 4px solid #fff; }
+        .secondary-btn {
+            pointer-events: auto;
+            background: rgba(0, 242, 255, 0.1);
+            color: #00f2ff;
+            border: 1px solid #00f2ff;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-right: 5px;
+            transition: 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div id="overlay">
+        <div class="race-title" id="main-msg">SpeedVerse WebAI</div>
+        <button id="start-btn" class="btn" onclick="startRace()">START AI RACE</button>
+    </div>
+
+    <div id="ui-layer">
+        <div style="font-size: 18px; font-weight: bold; letter-spacing: 2px; color: #fff;">SpeedVerse F1 Neural Network : Test v128</div>
+        <div id="status">STATUS: STANDBY</div>
+        <button class="secondary-btn" onclick="toggleView()">CAMERA [C]</button>
+        <button class="secondary-btn" onclick="toggleTarget()">TARGET [V]</button>
+    </div>
+
+    <div id="driver-tags"></div>
+
+    <div id="leaderboard">
+        <div style="font-weight: bold; margin-bottom: 10px; color: #00f2ff; letter-spacing: 1px;">LIVE GRID TELEMETRY (CLICK FOR DATA)</div>
+        <div id="rank-list"></div>
+    </div>
+
+    <script>
+        let scene, renderer, mainCamera, minimapCamera;
+        let racers = [];
+        let buildings = [];
+        let viewMode = 'follow'; 
+        let targetIndex = 0;
+        let selectedRacerIndex = -1;
+        let mainSpline;
+        let roadWireframe;
+        let sky, sun;
+        
+        let raceActive = false;
+        let raceFinished = false;
+
+        const ROAD_WIDTH = 85;
+        const ROAD_FLATTEN = 0.05; 
+        const VIEW_DIST = 8000; 
+        const TOTAL_LAPS = 3;
+        const MAX_MPH = 280;
+        const MPH_TO_SPLINE = 0.0000085;
+
+        const TEAMS = [
+            { name: "Invision Performance", color: 0xFFD700, p: 1.0 },
+            { name: "Solis Grand Prix", color: 0xFF4400, p: 0.98 },
+            { name: "Zenith Engineering", color: 0x00FF00, p: 0.99 },
+            { name: "Flux Dynamics", color: 0x00CED1, p: 0.97 }
+        ];
+
+        function getOrdinal(n) {
+            let s = ["th", "st", "nd", "rd"], v = n % 100;
+            return n + (s[(v - 20) % 10] || s[v] || s[0]);
+        }
+
+        function init() {
+            scene = new THREE.Scene();
+            renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 0.5;
+            document.body.appendChild(renderer.domElement);
+
+            mainCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 100000);
+            const f = 500;
+            minimapCamera = new THREE.OrthographicCamera(-f, f, f, -f, 1, 20000);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+            initSky();
+            createWorld();
+            createRacers();
+
+            window.addEventListener('resize', onWindowResize);
+            window.addEventListener('keydown', (e) => {
+                if(e.key.toLowerCase() === 'c') toggleView();
+                if(e.key.toLowerCase() === 'v') toggleTarget();
+            });
+            animate();
+        }
+
+        function initSky() {
+            sky = new THREE.Sky();
+            sky.scale.setScalar(450000);
+            scene.add(sky);
+            sun = new THREE.Vector3();
+            const uniforms = sky.material.uniforms;
+            uniforms['turbidity'].value = 10;
+            uniforms['rayleigh'].value = 3;
+            uniforms['mieCoefficient'].value = 0.005;
+            uniforms['mieDirectionalG'].value = 0.7;
+            sun.setFromSphericalCoords(1, THREE.MathUtils.degToRad(88), THREE.MathUtils.degToRad(180));
+            uniforms['sunPosition'].value.copy(sun);
+            const sunLight = new THREE.DirectionalLight(0xffffff, 1.0);
+            sunLight.position.copy(sun).multiplyScalar(1000);
+            scene.add(sunLight);
+            scene.fog = new THREE.Fog(0x334455, 1000, 15000);
+        }
+
+        function createWorld() {
+            const points = [
+                new THREE.Vector3(0, 0, 0),
+                new THREE.Vector3(2500, 1500, 1500),
+                new THREE.Vector3(5000, -1000, 1000),
+                new THREE.Vector3(7500, 800, -1500),
+                new THREE.Vector3(4500, -2000, -5500),
+                new THREE.Vector3(2000, 2000, -6500),
+                new THREE.Vector3(-3500, 800, -4500),
+                new THREE.Vector3(-6500, 2000, 0),
+                new THREE.Vector3(-7500, -1000, 3500),
+                new THREE.Vector3(-3500, 0, 5500),
+                new THREE.Vector3(0, 0, 0)
+            ];
+            mainSpline = new THREE.CatmullRomCurve3(points, true);
+            const trackGeo = new THREE.TubeGeometry(mainSpline, 1000, ROAD_WIDTH/2, 16, true);
+            const trackMat = new THREE.MeshStandardMaterial({ color: 0x080808, metalness: 0.7, roughness: 0.1 });
+            const road = new THREE.Mesh(trackGeo, trackMat);
+            road.scale.y = ROAD_FLATTEN;
+            scene.add(road);
+            const wireGeo = new THREE.TubeGeometry(mainSpline, 1000, (ROAD_WIDTH/2) + 0.8, 8, true);
+            roadWireframe = new THREE.Mesh(wireGeo, new THREE.MeshBasicMaterial({ vertexColors: true, wireframe: true, transparent: true, opacity: 0.35 }));
+            roadWireframe.scale.y = ROAD_FLATTEN;
+            scene.add(roadWireframe);
+            updateTrackColors();
+
+            const box = new THREE.BoxGeometry(1, 1, 1);
+            for(let i=0; i < 160; i++) {
+                let valid = false, bPos = new THREE.Vector3(), attempts = 0;
+                while(!valid && attempts < 50) {
+                    const angle = Math.random() * Math.PI * 2, dist = 1300 + Math.random() * 9500;
+                    bPos.set(Math.cos(angle) * dist, -2500, Math.sin(angle) * dist);
+                    valid = true;
+                    for(let t=0; t<=1; t+=0.01) {
+                        const tp = mainSpline.getPointAt(t);
+                        if(Math.sqrt(Math.pow(bPos.x-tp.x,2)+Math.pow(bPos.z-tp.z,2)) < 800) { valid = false; break; }
+                    }
+                    attempts++;
+                }
+                if(valid) {
+                    const b = new THREE.Mesh(box, new THREE.MeshBasicMaterial({ color: 0x040608 }));
+                    b.position.copy(bPos);
+                    b.scale.set(300+Math.random()*400, 4500+Math.random()*7000, 300+Math.random()*400);
+                    scene.add(b);
+                    buildings.push(b);
+                }
+            }
+        }
+
+        function updateTrackColors() {
+            const position = roadWireframe.geometry.attributes.position;
+            const colorAttr = new THREE.Float32BufferAttribute(position.count * 3, 3);
+            for (let i = 0; i < position.count; i++) {
+                const y = position.getY(i);
+                const normalizedY = (y + 2000) / 4000;
+                colorAttr.setXYZ(i, THREE.MathUtils.lerp(1, 0, normalizedY), THREE.MathUtils.lerp(0.5, 1, normalizedY), normalizedY > 0.5 ? (normalizedY-0.5)*2 : 0.8);
+            }
+            roadWireframe.geometry.setAttribute('color', colorAttr);
+        }
+
+        function createDetailedF1Model(team) {
+            const group = new THREE.Group();
+            const carGroup = new THREE.Group();
+            
+            const bodyMaterial = new THREE.MeshPhongMaterial({ color: team.color, shininess: 100 });
+            const blackMaterial = new THREE.MeshPhongMaterial({ color: 0x111111 });
+            const tireMaterial = new THREE.MeshPhongMaterial({ color: 0x222222 });
+
+            // Main Chassis (Central Tub)
+            const chassisGeo = new THREE.BoxGeometry(0.8, 0.4, 3);
+            const chassis = new THREE.Mesh(chassisGeo, bodyMaterial);
+            chassis.position.y = 0.3;
+            carGroup.add(chassis);
+
+            // Nose Cone (Sloped front)
+            const noseGeo = new THREE.CylinderGeometry(0.1, 0.4, 1.2, 4);
+            const nose = new THREE.Mesh(noseGeo, bodyMaterial);
+            nose.rotation.x = Math.PI / 2;
+            nose.position.set(0, 0.25, 2);
+            carGroup.add(nose);
+
+            // Front Wing
+            const fWingGeo = new THREE.BoxGeometry(2.2, 0.05, 0.4);
+            const fWing = new THREE.Mesh(fWingGeo, blackMaterial);
+            fWing.position.set(0, 0.15, 2.5);
+            carGroup.add(fWing);
+
+            // Sidepods
+            const podGeo = new THREE.BoxGeometry(0.4, 0.4, 1.5);
+            const leftPod = new THREE.Mesh(podGeo, bodyMaterial);
+            leftPod.position.set(0.6, 0.3, 0);
+            carGroup.add(leftPod);
+
+            const rightPod = new THREE.Mesh(podGeo, bodyMaterial);
+            rightPod.position.set(-0.6, 0.3, 0);
+            carGroup.add(rightPod);
+
+            // Rear Wing
+            const rWingMainGeo = new THREE.BoxGeometry(1.4, 0.05, 0.5);
+            const rWing = new THREE.Mesh(rWingMainGeo, blackMaterial);
+            rWing.position.set(0, 0.9, -1.4);
+            carGroup.add(rWing);
+
+            const rWingSupportGeo = new THREE.BoxGeometry(0.1, 0.6, 0.1);
+            const supportL = new THREE.Mesh(rWingSupportGeo, blackMaterial);
+            supportL.position.set(0.5, 0.6, -1.4);
+            carGroup.add(supportL);
+
+            const supportR = new THREE.Mesh(rWingSupportGeo, blackMaterial);
+            supportR.position.set(-0.5, 0.6, -1.4);
+            carGroup.add(supportR);
+
+            // Cockpit / Halo
+            const haloGeo = new THREE.TorusGeometry(0.25, 0.04, 8, 16, Math.PI);
+            const halo = new THREE.Mesh(haloGeo, blackMaterial);
+            halo.rotation.x = -Math.PI / 2;
+            halo.rotation.z = Math.PI;
+            halo.position.set(0, 0.55, 0.5);
+            carGroup.add(halo);
+
+            // Wheels
+            const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.35, 24);
+            const wheelPositions = [
+                { x: 0.8, y: 0.4, z: 1.2 }, { x: -0.8, y: 0.4, z: 1.2 },
+                { x: 0.9, y: 0.4, z: -1.1 }, { x: -0.9, y: 0.4, z: -1.1 }
+            ];
+
+            wheelPositions.forEach(pos => {
+                const wheel = new THREE.Mesh(wheelGeo, tireMaterial);
+                wheel.rotation.z = Math.PI / 2;
+                wheel.position.set(pos.x, pos.y, pos.z);
+                carGroup.add(wheel);
+                const rimGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.36, 12);
+                const rim = new THREE.Mesh(rimGeo, bodyMaterial);
+                wheel.add(rim);
+            });
+
+            // Scale up slightly for visibility on track
+            carGroup.scale.set(6, 6, 6);
+            group.add(carGroup);
+
+            // Overhead Arrow
+            const arrowShape = new THREE.Shape();
+            arrowShape.moveTo(0, 25);
+            arrowShape.lineTo(20, -18);
+            arrowShape.lineTo(0, -10);
+            arrowShape.lineTo(-20, -18);
+            arrowShape.lineTo(0, 25);
+            const arrowGeo = new THREE.ShapeGeometry(arrowShape);
+            const arrowMat = new THREE.MeshBasicMaterial({ color: team.color, side: THREE.DoubleSide });
+            const arrow = new THREE.Mesh(arrowGeo, arrowMat);
+            arrow.rotation.x = Math.PI / 2;
+            arrow.scale.set(1.8, 1.8, 1.8);
+            arrow.visible = false; 
+            group.add(arrow);
+
+            return { group, carGroup, arrow };
+        }
+
+        function createRacers() {
+            TEAMS.forEach((team, i) => {
+                const { group, carGroup, arrow } = createDetailedF1Model(team);
+                scene.add(group);
+                const tag = document.createElement('div');
+                tag.className = 'driver-tag';
+                document.getElementById('driver-tags').appendChild(tag);
+                racers.push({
+                    mesh: group, carGroup, arrow, tag: tag, name: team.name, color: team.color, 
+                    perf: team.p,
+                    t: -0.012 * (i + 1),
+                    lap: 0, 
+                    currentMph: 0,
+                    laneOffset: (i - 1.5) * 18, targetLaneOffset: (i - 1.5) * 18,
+                    rank: i + 1, elevation: 0,
+                    finished: false, finishTime: 0
+                });
+            });
+        }
+
+        function startRace() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('status').innerText = 'STATUS: RACING';
+            raceActive = true;
+        }
+
+        function toggleView() {
+            const modes = ['follow', 'cockpit', 'overhead'];
+            viewMode = modes[(modes.indexOf(viewMode) + 1) % modes.length];
+            racers.forEach(r => {
+                const isOverhead = (viewMode === 'overhead');
+                r.carGroup.visible = !isOverhead;
+                r.arrow.visible = isOverhead;
+            });
+        }
+
+        function toggleTarget() { targetIndex = (targetIndex + 1) % racers.length; }
+        function selectDriver(index) { selectedRacerIndex = (selectedRacerIndex === index) ? -1 : index; }
+
+        function updateRacers() {
+            const sorted = [...racers].sort((a, b) => {
+                if(a.finished && b.finished) return a.finishTime - b.finishTime;
+                if(a.finished) return -1;
+                if(b.finished) return 1;
+                return (b.lap * 10 + b.t) - (a.lap * 10 + a.t);
+            });
+            sorted.forEach((r, idx) => r.rank = idx + 1);
+
+            racers.forEach((r, idx) => {
+                if (!raceActive && !r.finished) return;
+
+                let targetMph = 250 + (r.perf * 15) + (Math.sin(Date.now() * 0.001 + idx) * 8);
+                
+                // Horizontal nudge logic to prevent overlap
+                racers.forEach((other, oIdx) => {
+                    if (idx === oIdx) return;
+                    const longDist = Math.abs((r.lap + r.t) - (other.lap + other.t));
+                    const latDist = Math.abs(r.laneOffset - other.laneOffset);
+                    if (longDist < 0.006 && latDist < 18) {
+                        const dir = r.laneOffset > other.laneOffset ? 1 : -1;
+                        r.laneOffset += dir * 1.2;
+                    }
+                });
+
+                if (r.lap >= TOTAL_LAPS && !r.finished) {
+                    r.finished = true;
+                    r.finishTime = Date.now();
+                    if (racers.every(x => x.finished)) {
+                        raceFinished = true;
+                        document.getElementById('overlay').style.display = 'block';
+                        document.getElementById('start-btn').style.display = 'none';
+                        document.getElementById('main-msg').innerText = "RACE COMPLETE";
+                    }
+                }
+
+                if (r.finished) targetMph *= 0.8;
+                r.currentMph = THREE.MathUtils.lerp(r.currentMph, Math.min(targetMph, MAX_MPH), r.finished ? 0.01 : 0.04);
+                r.t += r.currentMph * MPH_TO_SPLINE;
+                if (r.t >= 1) { r.t -= 1; r.lap++; }
+
+                if (Math.random() < 0.004 && !r.finished) r.targetLaneOffset = (Math.random() - 0.5) * 65;
+                r.laneOffset = THREE.MathUtils.lerp(r.laneOffset, r.targetLaneOffset, 0.015);
+
+                const basePos = mainSpline.getPointAt(r.t < 0 ? 0 : r.t % 1);
+                const tangent = mainSpline.getTangentAt(r.t < 0 ? 0 : r.t % 1).normalize();
+                const normal = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize();
+                
+                r.mesh.position.copy(basePos.clone().add(normal.multiplyScalar(r.laneOffset)));
+                r.mesh.position.y = (basePos.y * ROAD_FLATTEN) + (viewMode === 'overhead' ? 45 : 2.5);
+                r.elevation = Math.floor(r.mesh.position.y * 10);
+                
+                const lookAtPos = mainSpline.getPointAt((Math.max(0, r.t) + 0.01) % 1);
+                lookAtPos.y *= ROAD_FLATTEN;
+                r.mesh.lookAt(lookAtPos);
+
+                // DATA TAG UPDATES
+                const isSelected = (selectedRacerIndex === idx);
+                const screenPos = r.mesh.position.clone().project(mainCamera);
+                
+                if (isSelected && screenPos.z < 1 && Math.abs(screenPos.x) < 1.1 && Math.abs(screenPos.y) < 1.1) {
+                    r.tag.style.display = 'block';
+                    r.tag.style.left = `${(screenPos.x + 1) * 50}%`;
+                    r.tag.style.top = `${(-screenPos.y + 1) * 50}%`;
+                    r.tag.style.borderColor = new THREE.Color(r.color).getStyle();
+                    r.tag.innerHTML = `
+                        <div style="color:${new THREE.Color(r.color).getStyle()}; font-size: 14px; margin-bottom: 4px;">
+                            ${getOrdinal(r.rank)} | ${r.name.toUpperCase()}
+                        </div>
+                        <div class="telemetry-grid">
+                            <span>SPEED: ${Math.floor(r.currentMph)} MPH</span>
+                            <span>LAP: ${Math.min(r.lap + 1, TOTAL_LAPS)}/${TOTAL_LAPS}</span>
+                            <span>ELEV: ${r.elevation}m</span>
+                            <span>GRID: ${getOrdinal(r.rank)}</span>
+                        </div>
+                        <div style="font-size: 9px; margin-top: 8px; color: rgba(255,255,255,0.4); text-align: center; letter-spacing: 1px;">LIVE TELEMETRY UPLINK</div>
+                    `;
+                } else { r.tag.style.display = 'none'; }
+            });
+
+            const list = document.getElementById('rank-list');
+            list.innerHTML = sorted.map((r) => {
+                const originalIndex = racers.indexOf(r);
+                const isSelected = (selectedRacerIndex === originalIndex);
+                return `
+                <div class="racer-entry ${isSelected ? 'selected' : ''}" 
+                     onclick="selectDriver(${originalIndex})"
+                     style="border-left: 4px solid ${new THREE.Color(r.color).getStyle()}; background: ${r.rank===1?'rgba(255,215,0,0.1)':'transparent'}">
+                    <div>
+                        <span style="font-weight:bold; color:${new THREE.Color(r.color).getStyle()}">${getOrdinal(r.rank)}</span> 
+                        ${r.name} ${r.finished ? '🚩' : ''}
+                    </div>
+                    <div style="text-align:right">
+                        <span style="color:#00f2ff; font-weight: bold;">${Math.floor(r.currentMph)} MPH</span><br>
+                        <span style="font-size:9px; opacity:0.6">LAP ${Math.min(r.lap+1, TOTAL_LAPS)}</span>
+                    </div>
+                </div>
+            `;}).join('');
+        }
+
+        function updateCameras() {
+            const target = racers[targetIndex];
+            if (!target) return;
+            
+            if (viewMode === 'follow') {
+                const offset = new THREE.Vector3(0, 30, -75).applyQuaternion(target.mesh.quaternion);
+                mainCamera.position.lerp(target.mesh.position.clone().add(offset), 0.15);
+                mainCamera.lookAt(target.mesh.position);
+            } else if (viewMode === 'cockpit') {
+                const offset = new THREE.Vector3(0, 4.5, 4).applyQuaternion(target.mesh.quaternion);
+                mainCamera.position.copy(target.mesh.position).add(offset);
+                const lookTarget = new THREE.Vector3(0, 2, 80).applyQuaternion(target.mesh.quaternion).add(target.mesh.position);
+                mainCamera.lookAt(lookTarget);
+            } else {
+                const overhead = new THREE.Vector3(target.mesh.position.x, 2800, target.mesh.position.z);
+                mainCamera.position.lerp(overhead, 0.05);
+                mainCamera.lookAt(target.mesh.position);
+            }
+
+            const camPos = mainCamera.position;
+            buildings.forEach(b => b.visible = b.position.distanceTo(camPos) < VIEW_DIST);
+            minimapCamera.position.set(target.mesh.position.x, 10000, target.mesh.position.z);
+            minimapCamera.lookAt(target.mesh.position);
+        }
+
+        function onWindowResize() {
+            mainCamera.aspect = window.innerWidth / window.innerHeight;
+            mainCamera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            updateRacers();
+            updateCameras();
+            renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
+            renderer.setScissorTest(false);
+            renderer.render(scene, mainCamera);
+            const mSize = 220;
+            renderer.setScissor(window.innerWidth - mSize - 20, 20, mSize, mSize);
+            renderer.setViewport(window.innerWidth - mSize - 20, 20, mSize, mSize);
+            renderer.setScissorTest(true);
+            renderer.render(scene, minimapCamera);
+        }
+        window.onload = init;
+    </script>
+</body>
+</html>
